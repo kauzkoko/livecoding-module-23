@@ -1,0 +1,3 @@
+<template>
+  <Donut />
+</template>

@@ -1,4 +1,5 @@
-NODE_TLS_REJECT_UNAUTHORIZED=0 yarn dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem
+@ege, if u want to run it in https mode u can do the following in terminal:
+NODE_TLS_REJECT_UNAUTHORIZED=0 bun dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem
 
 # Nuxt 3 Minimal Starter
 

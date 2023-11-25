@@ -5,7 +5,9 @@
         class="text-20px"
         :to="route.path"
         v-if="route.name !== 'index'"
-        >{{ route.name }}</NuxtLink
+        >{{
+          route.name.split("-")[0] + "/" + route.name.split("-")[1]
+        }}</NuxtLink
       >
     </div>
   </div>

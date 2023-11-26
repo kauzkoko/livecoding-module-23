@@ -1,11 +1,11 @@
 <template>
-  <div w-screen h-screen flexCenter @click="animate()">
+  <div w-screen h-screen flexCenter @click="animate()" bg-black>
     <div class="pointer-events-none! fixed" id="p5" />
   </div>
   <div
-    bg-yellow
+    bg-hex-1F6100
     aspect-1
-    w-100px
+    w-440px
     rounded-full
     top-300px
     fixed
@@ -13,22 +13,47 @@
     class="translate--50%"
     :style="{ left: windowWidth / 2 + 'px' }"
   ></div>
+  <div
+    aspect-1
+    w-200px
+    rounded-full
+    top-300px
+    fixed
+    transform-gpu
+    class="translate--50%"
+    flexCenter
+    :style="{
+      left: windowWidth / 2 + 'px',
+    }"
+  >
+    <div
+      w-full
+      h-full
+      style="background-image: url('/yellowtoken.png')"
+      :style="{
+        transform: 'rotate(' + rotation + 'deg)',
+        transition: 'transform linear 4s',
+      }"
+    ></div>
+  </div>
+  <div left-2 top-2 fixed text-yellow>{{ windowHeight }}</div>
 </template>
 
 <script setup>
 import { TransitionPresets } from "@vueuse/core";
 // const { fragmentShader, vertexShader } = useShaders(5);
-const { fragmentShader, vertexShader } = useShadersGPT({
+const { fragmentShader, vertexShader } = useShadersHardcoded({
   balls: 2,
   color: [0, 0, 0, 1],
 });
 const { width: windowWidth, height: windowHeight } = useWindowSize();
+const y = ref(300);
 let width = 800;
 let height = windowHeight.value;
 let metaballShader;
 let bioms = [
   { x: width / 2, y: 300, r: 200, color: [1.0, 0.0, 0.0, 1.0] },
-  { x: width / 2, y: 1200, r: 100, color: [0.0, 1.0, 0.0, 1.0] },
+  { x: width / 2, y: 1200, r: 50, color: [0.0, 1.0, 0.0, 1.0] },
 ];
 let balls = [];
 let multiplier = 2;
@@ -44,18 +69,27 @@ class Ball {
   }
 }
 
+const trans = ref();
 const source = ref(bioms[1].y);
 const output = useTransition(source, {
-  duration: 1000,
-  transition: TransitionPresets.linear,
-  onFinished() {
-    source.value = 1200;
-  },
+  duration: 5000,
+  transition: trans,
 });
 
+const rotation = ref(0);
+const clicked = ref(false);
 const animate = () => {
-  console.log("animate");
-  source.value = 300;
+  setTimeout(
+    () => {
+      rotation.value += 270;
+    },
+    clicked.value ? 0 : 1000
+  );
+  trans.value = clicked.value
+    ? TransitionPresets.easeIn
+    : TransitionPresets.linear;
+  source.value = clicked.value ? 1200 : 300;
+  clicked.value = !clicked.value;
 };
 
 onMounted(() => {
@@ -83,10 +117,12 @@ onMounted(() => {
     p5.draw = () => {
       bioms.forEach((biom, index) => {
         if (index === 1) {
-          bioms[index].y = p5.mouseY;
+          y.value = output.value;
+          bioms[index].y = y.value;
         }
       });
       p5.clear();
+      metaballShader.setUniform("height", windowHeight.value);
       metaballShader.setUniform(
         "rs",
         balls.map((b, index) => bioms[index].r * multiplier * 8)
@@ -100,14 +136,12 @@ onMounted(() => {
         balls.map((b, index) => height - bioms[index].y)
       );
       let test = bioms.map((biom, index) => bioms[index].color);
-      console.log("test", test);
       let flatColors = [];
       bioms.forEach((biom) => {
         flatColors.push(...test);
       });
-      console.log("flatColors: ", flatColors);
       // metaballShader.setUniform("ballColors", [0.0, 1.0, 0.0, 1.0]);
-      metaballShader.setUniform("ballColors", [31, 97, 0, 1]);
+      metaballShader.setUniform("ballColors", [...flatColors[1]]);
       p5.quad(-1, -1, 1, -1, 1, 1, -1, 1);
     };
   };

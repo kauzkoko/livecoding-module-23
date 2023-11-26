@@ -1,4 +1,4 @@
-export const useShadersGPT = (options: { balls: number; color: [] }) => {
+export const useShadersHardcoded = (options: { balls: number; color: [] }) => {
   let balls = options.balls ?? 5;
   let color = options.color ?? [0.0, 0.0, 0.0, 1];
 
@@ -33,6 +33,7 @@ export const useShadersGPT = (options: { balls: number; color: [] }) => {
 
     varying highp vec2 vPos;
     
+    vec4 green = vec4(31./255., 97./255., 0., 1.);
     void main() {
         float currentPixelY = gl_FragCoord.y;
 
@@ -42,9 +43,10 @@ export const useShadersGPT = (options: { balls: number; color: [] }) => {
         //rgba(31, 97, 0, 1)
         //rgba(62, 193, 1, 1)
         // colorArray[0] = vec4(62./255., 193./255., 1./255., 1.0); 
-        colorArray[0] = vec4(62./255., 193./255., 1./255., 1.0); 
+        // colorArray[0] = vec4(62./255., 193./255., 1./255., 1.0); 
         // colorArray[0] = vec4(31./255., 97./255., 0./255., 1.0);
         // colorArray[0] = vec4(12./255., 38./255., 0./255., 1.0);
+        colorArray[0] = green;
         colorArray[1] = vec4(255./255., 255./255., 255./255., 1.0);
     
         for (int i = 0; i < BALLS; i++) {
@@ -61,16 +63,13 @@ export const useShadersGPT = (options: { balls: number; color: [] }) => {
         vec2 pointA = vec2(0., ys[0]);
         vec2 pointB = vec2(0., ys[1]);
         float dist = distance(pointA, pointB);
-        // if (dist < 450.) {             
-        //   gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        // }
-        if (currentPixelY < height - 600.) {
-            gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+        if (currentPixelY < height - 600. && totalInfluence > 16. && dist > 449.) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0); //Atmospheric CO2 White
         }
-        else if (totalInfluence > 16. && dist < 450.) {
-            gl_FragColor = color / totalInfluence; // Normalize color by total influence
-        } else if (totalInfluence > 16. && xs[1] < 1200.) {
-            gl_FragColor = vec4(vec3(1.), 1.0); // white color
+        else if (totalInfluence > 16. && dist < 451.) {
+            gl_FragColor = color / totalInfluence; //Gradient Normalize color by total influence
+        } else if (totalInfluence > 16. && ys[1] < 1200.) {
+            gl_FragColor = green;
         } else {
             gl_FragColor = vec4(vec3(1.), 0.0); // Background color
         }

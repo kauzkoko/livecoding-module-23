@@ -43,5 +43,7 @@ useTextEllipse({
   x: windowWidth.value / 2,
   y: windowHeight.value / 2,
   r: 500,
+  color: "red",
+  svgSelector: "#mySvg",
 });
 </script>

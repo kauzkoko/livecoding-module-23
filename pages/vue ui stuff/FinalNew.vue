@@ -1,14 +1,36 @@
 <template>
+  <div fixed left-0 top-0 bg-yellow z-1>
+    <div flex justify-between>
+      <label>Show particle text</label
+      ><input type="checkbox" v-model="showParticleText" />
+    </div>
+    <div flex justify-between>
+      <label>Blend particles instead of border</label
+      ><input type="checkbox" v-model="blendParticles" />
+    </div>
+    <div flex justify-between>
+      <label>Particle color</label><input type="text" v-model="particleColor" />
+    </div>
+    <div flex justify-between>
+      <label>Storage color</label><input type="text" v-model="storageColor" />
+    </div>
+  </div>
   <div
     v-for="n in particles.length"
-    class="aspect-1 bg-gray fixed left-0 top-0 rounded-full transition-all ease-linear z--1 particles"
+    class="aspect-1 fixed left-0 top-0 rounded-full transition-transform ease-linear z--1 particles flexCenter text-black"
     :style="{
       transitionDuration: `${60000}ms`,
       width: `${particles[n - 1].r}px`,
       transform: `translate(${particles[n - 1].x}px, ${particles[n - 1].y}px)`,
+      mixBlendMode: blendParticles ? 'difference' : 'normal',
+      border: blendParticles ? 'none' : '1px solid black',
+      backgroundColor: particleColor,
     }"
-  ></div>
+  >
+    {{ showParticleText ? particles[n - 1].r.toFixed(0) + "Gt" : "" }}
+  </div>
   <svg
+    id="mySvg"
     :width="windowWidth + 'px'"
     :height="windowHeight + 'px'"
     class="fixed left-0 top-0"
@@ -40,30 +62,38 @@
       </filter>
     </defs>
     <g v-for="n in 9">
-      <g filter="url(#metaballFilter)" v-show="data[n - 1].potential !== 200">
+      <g filter="url(#metaballFilter)">
         <circle
+          v-show="data[n - 1].potential !== 200"
           ref="el"
           id="circle"
           :cx="(windowWidth / 9) * n - windowWidth / 18"
           :cy="ecosystems[n - 1].y"
-          :r="100"
-          fill="gray"
+          :r="
+            data[n - 1].guessedPotential
+              ? (data[n - 1].guessedPotential / 2) * magicScale
+              : (data[n - 1].potential / 2) * magicScale
+          "
+          :fill="particleColor"
           class="transition-all duration-2000 ease-out"
         />
         <circle
+          :id="'circle-' + ecosystems[n - 1].name"
           :cx="(windowWidth / 9) * n - windowWidth / 18"
           :cy="windowHeight / 2"
           :r="
             ecosystems[n - 1].showPotential
-              ? data[n - 1].totalPotential / 2 + 7
+              ? data[n - 1].potential === 200
+                ? data[n - 1].totalCurrent / 2 + 7
+                : (data[n - 1].totalPotential * magicScale) / 2 + 7
               : ecosystems[n - 1].showCurrent
               ? data[n - 1].totalCurrent / 2 + 7
               : 0
           "
-          fill="green"
+          :fill="n - 1 ? storageColor : '#122612'"
           :style="{
             transitionProperty: 'all',
-            transitionDelay: ecosystems[n - 1].showPotential ? '500ms' : '0ms',
+            transitionDelay: ecosystems[n - 1].showPotential ? '800ms' : '0ms',
             transitionDuration: ecosystems[n - 1].showPotential
               ? '500ms'
               : '1000ms',
@@ -77,13 +107,22 @@
         :r="data[n - 1].totalCurrent / 2"
         fill="transparent"
         stroke="white"
+        :style="{
+          mixBlendMode: ecosystems[n - 1].showCurrent ? 'normal' : 'difference',
+        }"
       />
       <circle
+        v-show="data[n - 1].potential !== 200"
         :cx="(windowWidth / 9) * n - windowWidth / 18"
         :cy="windowHeight / 2"
-        :r="data[n - 1].totalPotential / 2"
+        :r="(data[n - 1].totalPotential * magicScale) / 2"
         fill="transparent"
         stroke="white"
+        :style="{
+          mixBlendMode: ecosystems[n - 1].showPotential
+            ? 'normal'
+            : 'difference',
+        }"
       />
     </g>
   </svg>
@@ -92,6 +131,8 @@
       v-for="n in 9"
       @showCurrent="showCurrent"
       @showPotential="showPotential"
+      @showAboveBelow="showAboveBelow"
+      @exit="exit"
       :ecosystem="ecosystems[n - 1]"
       class="row-start-5 self-center justify-self-center"
     />
@@ -100,79 +141,47 @@
 
 <script setup>
 import "animate.css";
+import { SVG } from "@svgdotjs/svg.js";
 const { x, y: mouseY } = useMouse();
 const { width: windowWidth, height: windowHeight } = useWindowSize();
 const particles = ref([]);
 const ecosystems = ref([]);
 
+const showParticleText = ref(false);
+const blendParticles = ref(true);
+const particleColor = ref("gray");
+const storageColor = ref("rgb(0, 50,0)");
+
+// let setParticles = 0;
 for (let i = 0; i < 40; i++) {
   particles.value.push({
     x: Math.random() * windowWidth.value,
     y: Math.random() * windowHeight.value,
     r: Math.random() * 200,
   });
+  // useTextEllipse({
+  //   text: particles.value[i].r.toFixed(0) + " Gt",
+  //   x: particles.value[i].x,
+  //   y: particles.value[i].y,
+  //   r: particles.value[i].r,
+  //   color: "white",
+  //   svgSelector: "#mySvg",
+  //   offset: Math.floor(Math.random() * 50),
+  // });
 }
+// setParticles = 1;
 
+let magicScale = 1.1;
 let data = [
   {
-    ecosystem: "Forest",
-    currentAbove: 432,
-    potentialAbove: 247,
-    currentBelow: 1003,
-    potentialBelow: 277,
-    totalPotential: 1353,
-    totalCurrent: 1292,
-    potential: 571,
-  },
-  {
-    ecosystem: "Savanna",
-    currentAbove: 101,
-    potentialAbove: 81,
-    currentBelow: 339,
-    potentialBelow: 133,
-    totalPotential: 587,
-    totalCurrent: 554,
-    potential: 356,
-  },
-  {
-    ecosystem: "Shrubland",
-    currentAbove: 85,
-    potentialAbove: 69,
-    currentBelow: 438,
-    potentialBelow: 133,
-    totalPotential: 671,
-    totalCurrent: 646,
-    potential: 350,
-  },
-  {
-    ecosystem: "Grassland",
-    currentAbove: 58,
-    potentialAbove: 78,
-    currentBelow: 646,
-    potentialBelow: 117,
-    totalPotential: 864,
-    totalCurrent: 849,
-    potential: 341,
-  },
-  {
-    ecosystem: "Wetlands",
-    currentAbove: 29,
-    potentialAbove: 22,
-    currentBelow: 162,
-    potentialBelow: 21,
-    totalPotential: 367,
-    totalCurrent: 365,
-    potential: 231,
-  },
-  {
-    ecosystem: "Desert",
-    currentAbove: 10,
-    potentialAbove: 13,
-    currentBelow: 287,
-    potentialBelow: 56,
-    totalPotential: 493,
-    totalCurrent: 488,
-    potential: 258,
+    ecosystem: "Open Ocean",
+    currentAbove: 4763,
+    potentialAbove: 0,
+    currentBelow: 982,
+    potentialBelow: 0,
+    totalPotential: 5063,
+    totalCurrent: 5063,
+    potential: 200,
   },
   {
     ecosystem: "Blue Carbon Ecosystems",
@@ -185,6 +194,69 @@ let data = [
     potential: 200,
   },
   {
+    ecosystem: "Savanna",
+    currentAbove: 101,
+    potentialAbove: 81,
+    currentBelow: 339,
+    potentialBelow: 133,
+    totalPotential: 587,
+    totalCurrent: 554,
+    potential: 356,
+  },
+  {
+    ecosystem: "Grassland",
+    currentAbove: 58,
+    potentialAbove: 78,
+    currentBelow: 646,
+    potentialBelow: 117,
+    totalPotential: 864,
+    totalCurrent: 849,
+    potential: 341,
+    // guessedPotential: 550,
+  },
+  {
+    ecosystem: "Shrublands",
+    currentAbove: 85,
+    potentialAbove: 69,
+    currentBelow: 438,
+    potentialBelow: 133,
+    totalPotential: 671,
+    totalCurrent: 646,
+    potential: 350,
+  },
+
+  {
+    ecosystem: "Wetlands",
+    currentAbove: 29,
+    potentialAbove: 22,
+    currentBelow: 162,
+    potentialBelow: 21,
+    totalPotential: 367,
+    totalCurrent: 365,
+    potential: 231,
+  },
+  {
+    ecosystem: "Forest",
+    currentAbove: 432,
+    potentialAbove: 247,
+    currentBelow: 1003,
+    potentialBelow: 277,
+    totalPotential: 1353,
+    totalCurrent: 1292,
+    potential: 571,
+  },
+  {
+    ecosystem: "Desert",
+    currentAbove: 10,
+    potentialAbove: 13,
+    currentBelow: 287,
+    potentialBelow: 56,
+    totalPotential: 493,
+    totalCurrent: 488,
+    potential: 258,
+  },
+
+  {
     ecosystem: "Continental margins",
     currentAbove: 733,
     potentialAbove: 0,
@@ -194,67 +266,75 @@ let data = [
     totalCurrent: 1116,
     potential: 200,
   },
-  {
-    ecosystem: "Open Ocean",
-    currentAbove: 4763,
-    potentialAbove: 0,
-    currentBelow: 982,
-    potentialBelow: 0,
-    totalPotential: 5063,
-    totalCurrent: 5063,
-    potential: 200,
-  },
 ];
 
+//init ecosystems
 for (let i = 0; i < 9; i++) {
-  let temp = Math.random() * 500 + 220;
   ecosystems.value.push({
-    y: -30,
+    name: data[i].ecosystem,
+    y: -100,
     index: i,
     currentRadius: data[i].totalCurrent,
-    potentialRadius: data[i].totalPotential,
+    potentialRadius: data[i].totalPotential * magicScale,
   });
+  useTextEllipse({
+    text: data[i].ecosystem,
+    x: (windowWidth.value / 9) * (i + 1) - windowWidth.value / 18,
+    y: windowHeight.value / 2,
+    r: 220 / 2 + 3,
+    color: "white",
+    svgSelector: "#mySvg",
+    offset: Math.floor(Math.random() * 50),
+    front: true,
+    blend: false,
+  });
+  useTextEllipse({
+    text: "XY Gt Current Storage",
+    x: (windowWidth.value / 9) * (i + 1) - windowWidth.value / 18,
+    y: windowHeight.value / 2,
+    r: data[i].totalCurrent / 2 + 3,
+    color: "white",
+    svgSelector: "#mySvg",
+    offset: Math.floor(Math.random() * 50),
+    blend: true,
+  });
+  if (data[i].potential !== 200) {
+    useTextEllipse({
+      text: "XY Gt Potential Storage",
+      x: (windowWidth.value / 9) * (i + 1) - windowWidth.value / 18,
+      y: windowHeight.value / 2,
+      r: (data[i].totalPotential * magicScale) / 2 + 3,
+      color: "white",
+      svgSelector: "#mySvg",
+      offset: Math.floor(Math.random() * 50),
+      blend: true,
+    });
+  }
 }
-// onMounted(() => {
-//   let circle = document.getElementById("circle");
-//   const { pause, resume } = useRafFn(() => {
-//     yRef.value = circle.getBoundingClientRect().y;
-//   });
-// });
-
-// const difference = computed(() =>
-//   Math.abs(yRef.value - windowHeight.value / 2)
-// );
-
-// let r = ecosystems.value[2].currentRadius / 2;
-// const fakedR = computed(() => {
-//   if (difference.value < 360) {
-//     return (
-//       r +
-//       useMap(
-//         difference.value,
-//         245,
-//         0,
-//         0,
-//         49
-//         // Math.sqrt(
-//         //   Math.PI * Math.pow(r, 2) +
-//         //     (Math.PI * Math.pow(100, 2)) / Math.PI -
-//         //     r * 2
-//         // )
-//       )
-//     );
-//   } else {
-//     return r;
-//   }
-// });
 
 function setParticlePositions() {
-  particles.value.forEach((particle, index) => {
-    particles.value[index].x = Math.random() * windowWidth.value;
-    particles.value[index].y = Math.random() * windowHeight.value;
+  particles.value.forEach((particle, i) => {
+    // particles.value[i].lastX = particles.value[i].x;
+    // particles.value[i].lastY = particles.value[i].y;
+    particles.value[i].x = Math.random() * windowWidth.value;
+    particles.value[i].y = Math.random() * windowHeight.value;
   });
 }
+
+// text for every particle
+// useRafFn(() => {
+//   particles.value.forEach((particle, i) => {
+//     useTextEllipse({
+//       text: particles.value[i].r.toFixed(0) + " Gt",
+//       x: particles.value[i].lastX - particles.value[i].x / 60000,
+//       x: particles.value[i].lastY - particles.value[i].y / 60000,
+//       r: particles.value[i].r,
+//       color: "white",
+//       svgSelector: "#mySvg",
+//       offset: Math.floor(Math.random() * 50),
+//     });
+//   });
+// });
 
 function showPotential(index) {
   ecosystems.value[index].showPotential = true;
@@ -265,6 +345,22 @@ function showCurrent(index) {
   ecosystems.value[index].showCurrent = true;
 }
 
+function showAboveBelow(index) {
+  ecosystems.value[index].showAboveBelow = true;
+  ecosystems.value[index].showPotential = false;
+  ecosystems.value[index].y = 500;
+  setTimeout(() => {
+    ecosystems.value[index].showCurrent = false;
+    ecosystems.value[index].y = 200;
+  }, 2000);
+}
+
+function exit(index) {
+  setTimeout(() => {
+    ecosystems.value[index].y = -100;
+  }, 2000);
+}
+
 onMounted(() => {
   setInterval(() => {
     setParticlePositions();
@@ -272,6 +368,12 @@ onMounted(() => {
   setTimeout(() => {
     setParticlePositions();
   }, 1000);
+
+  // //set zindex of circles
+  // for (let i = 0; i < 6; i++) {
+  //   var element = SVG("#circle-" + ecosystems.value[i].name);
+  //   element.back();
+  // }
 });
 </script>
 
@@ -279,10 +381,5 @@ onMounted(() => {
 html {
   background-color: black;
   font-family: "Helvetica Neue" !important;
-}
-
-.particles {
-  /* mix-blend-mode: difference; */
-  border: 1px solid black;
 }
 </style>

@@ -1,20 +1,4 @@
 <template>
-  <!-- <div fixed left-0 top-0 text-50px bg-yellow>
-    <pre>difference: {{ difference }}</pre>
-    <pre>yRef: {{ yRef }}</pre>
-    <pre>mouseY: {{ mouseY }}</pre>
-    <pre>windowHeight/2: {{ windowHeight / 2 }}</pre>
-    <pre>
-abs(mouseY-windowHeight/2): {{ Math.abs(mouseY - windowHeight / 2) }}</pre
-    >
-    <pre>radius: {{ ecosystems[2].currentRadius }}</pre>
-    <pre>radius: {{ ecosystems[2].potentialRadius }}</pre>
-    <pre>
-radiusDifference: {{
-        ecosystems[2].potentialRadius - ecosystems[2].currentRadius
-      }}</pre
-    >
-  </div> -->
   <div
     v-for="n in particles.length"
     class="aspect-1 bg-gray fixed left-0 top-0 rounded-full transition-all ease-linear z--1 particles"
@@ -55,31 +39,58 @@ radiusDifference: {{
         />
       </filter>
     </defs>
-    <g
-      filter="url(#metaballFilter)"
-      v-for="n in 9"
-      v-show="data[n - 1].potential !== 200"
-    >
+    <g v-for="n in 9">
+      <g filter="url(#metaballFilter)" v-show="data[n - 1].potential !== 200">
+        <circle
+          ref="el"
+          id="circle"
+          :cx="(windowWidth / 9) * n - windowWidth / 18"
+          :cy="ecosystems[n - 1].y"
+          :r="100"
+          fill="gray"
+          class="transition-all duration-2000 ease-out"
+        />
+        <circle
+          :cx="(windowWidth / 9) * n - windowWidth / 18"
+          :cy="windowHeight / 2"
+          :r="
+            ecosystems[n - 1].showPotential
+              ? data[n - 1].totalPotential / 2 + 7
+              : ecosystems[n - 1].showCurrent
+              ? data[n - 1].totalCurrent / 2 + 7
+              : 0
+          "
+          fill="green"
+          :style="{
+            transitionProperty: 'all',
+            transitionDelay: ecosystems[n - 1].showPotential ? '500ms' : '0ms',
+            transitionDuration: ecosystems[n - 1].showPotential
+              ? '500ms'
+              : '1000ms',
+            transitionTimingFunction: 'ease-out',
+          }"
+        />
+      </g>
       <circle
-        ref="el"
-        id="circle"
         :cx="(windowWidth / 9) * n - windowWidth / 18"
-        :cy="ecosystems[n - 1].y"
-        :r="100"
-        fill="gray"
-        class="transition-all duration-2000 ease-in"
+        :cy="windowHeight / 2"
+        :r="data[n - 1].totalCurrent / 2"
+        fill="transparent"
+        stroke="white"
       />
       <circle
         :cx="(windowWidth / 9) * n - windowWidth / 18"
         :cy="windowHeight / 2"
         :r="data[n - 1].totalPotential / 2"
-        fill="rgba(0, 0, 255, 100)"
+        fill="transparent"
+        stroke="white"
       />
     </g>
   </svg>
   <div class="w-screen h-screen overflow-hidden grid grid-cols-9 grid-rows-9">
-    <Token
+    <TokenNew
       v-for="n in 9"
+      @showCurrent="showCurrent"
       @showPotential="showPotential"
       :ecosystem="ecosystems[n - 1]"
       class="row-start-5 self-center justify-self-center"
@@ -204,8 +215,6 @@ for (let i = 0; i < 9; i++) {
     potentialRadius: data[i].totalPotential,
   });
 }
-
-// const yRef = ref(0);
 // onMounted(() => {
 //   let circle = document.getElementById("circle");
 //   const { pause, resume } = useRafFn(() => {
@@ -248,8 +257,12 @@ function setParticlePositions() {
 }
 
 function showPotential(index) {
-  ecosystems.value[index].active = true;
+  ecosystems.value[index].showPotential = true;
   ecosystems.value[index].y = windowHeight.value / 2;
+}
+
+function showCurrent(index) {
+  ecosystems.value[index].showCurrent = true;
 }
 
 onMounted(() => {

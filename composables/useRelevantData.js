@@ -1,5 +1,4 @@
 import data from "~/assets/habitats.json";
-import { max } from "~/public/jsm/nodes/Nodes";
 
 export default function () {
   let relevantData = [];

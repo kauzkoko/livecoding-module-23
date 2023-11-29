@@ -1,30 +1,17 @@
 <template>
   <div class="w-full h-full flexCenter">
     <div
-      class="absolute bg-transparent aspect-1 rounded-full flexCenter transition-all duration-300 outline"
-      :style="{
-        width: `${ecosystem.currentRadius}px`,
-        height: `${ecosystem.currentRadius}px`,
-        border: hideCurrentLine
-          ? '1px solid rgba(255,255,255,0)'
-          : '1px solid rgba(255,255,255,1)',
-      }"
-    />
-    <div
       class="absolute bg-transparent aspect-1 rounded-full flexCenter transition-all duration-300 flexContainer"
       :style="{
         width: `${ecosystem.currentRadius}px`,
         height: `${ecosystem.currentRadius}px`,
-        border: hideCurrentLine
-          ? '1px solid rgba(255,255,255,0)'
-          : '1px solid rgba(255,255,255,1)',
       }"
     >
       <div
         class="absolute bg-green opacity-80 aspect-1 rounded-full z--1 ease-in"
         :style="{
           width: `${currentWidth}px`,
-          transitionDelay: step < 2 ? '0' : '100ms',
+          transitionDelay: step < 2 ? '0' : '1500ms',
           transitionDuration: step < 2 ? '2000ms' : '300ms',
         }"
       />
@@ -70,46 +57,21 @@
 const props = defineProps({
   ecosystem: Object,
 });
-const emit = defineEmits(["showPotential"]);
+const emit = defineEmits(["showCurrent", "showPotential"]);
 
-const hideCurrentLine = ref(false);
-const hidePotentialLine = ref(false);
-const currentWidth = ref(220);
-const potentialWidth = ref(props.ecosystem.currentRadius.value);
 const sideToggled = ref(false);
 
 const tokenImage = computed(() => {
   let string = `url("/${props.ecosystem.index + 1}.jpg")`;
   return string;
 });
-const outlineStyle = computed(() =>
-  hidePotentialLine.value
-    ? "1px solid rgba(255,255,255,0)"
-    : "1px solid rgba(255,255,255,1)"
-);
-const outlineOffset = computed(() => {
-  let string = `${
-    (props.ecosystem.potentialRadius - props.ecosystem.currentRadius) / 2
-  }px`;
-  return string;
-});
 
 const step = ref(0);
 function stepper() {
   if (step.value === 0) {
-    currentWidth.value = props.ecosystem.currentRadius;
-    setTimeout(() => {
-      hideCurrentLine.value = true;
-    }, 2000);
+    emit("showCurrent", props.ecosystem.index);
   } else if (step.value === 1) {
     emit("showPotential", props.ecosystem.index);
-    // same color approach
-    currentWidth.value = props.ecosystem.potentialRadius;
-    // different color approach
-    // potentialWidth.value = props.ecosystem.potentialRadius;
-    setTimeout(() => {
-      hidePotentialLine.value = true;
-    }, 2000);
   } else if (step.value === 2) {
     console.log("show above below");
   } else if (step.value === 3) {
@@ -135,12 +97,6 @@ const infoText = computed(() => {
 </script>
 
 <style lang="scss">
-.outline {
-  outline: v-bind(outlineStyle);
-  outline-offset: v-bind(outlineOffset);
-  mix-blend-mode: difference;
-}
-
 .flexContainer {
   .token {
     mix-blend-mode: normal;

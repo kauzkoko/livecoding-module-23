@@ -31,48 +31,17 @@
         />
       </g>
     </svg>
-    <input type="range" v-model="rotation" min="0" max="720" step="10" />
+    <!-- <input type="range" v-model="rotation" min="0" max="720" step="10" /> -->
   </div>
 </template>
 
 <script setup>
-import { SVG } from "@svgdotjs/svg.js";
 const { x: mouseX, y: mouseY } = useMouse();
 const { width: windowWidth, height: windowHeight } = useWindowSize();
-
-const rotation = ref(0);
-let text;
-var x = windowWidth.value / 2,
-  y = windowHeight.value / 2,
-  r = 500;
-
-useRafFn(() => {
-  text.rotate(0.01, x, y);
-});
-
-onMounted(() => {
-  var draw = SVG("#mySvg");
-  let circlePath;
-  circlePath = draw.path(
-    `M ${x},${y} m -${r},0 a ${r},${r} 0 1,0 ${2 * r},0 a ${r},${r} 0 1,0 -${
-      2 * r
-    },0`
-  );
-  circlePath.fill("none").stroke({ color: "transparent", width: 0 });
-  circlePath.attr("id", "circlePath");
-  circlePath.plot(
-    `M ${x},${y} m -${r},0 a ${r},${r} 0 1,1 ${2 * r},0 a ${r},${r} 0 1,1 -${
-      2 * r
-    },0`
-  );
-
-  text = draw.text(function (add) {
-    add.tspan("sdfasddf");
-  });
-
-  let textPath = text.path(circlePath);
-  textPath.tspan("5fsfs");
-  text.rotate(rotation.value, x, y);
-  textPath.attr("startOffset", "25%");
+useTextEllipse({
+  text: "hello",
+  x: windowWidth.value / 2,
+  y: windowHeight.value / 2,
+  r: 500,
 });
 </script>

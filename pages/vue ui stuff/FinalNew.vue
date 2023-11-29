@@ -1,177 +1,216 @@
 <template>
-  <div fixed left-0 top-0 bg-yellow z-1>
-    <div flex justify-between>
-      <label>Show particle text</label
-      ><input type="checkbox" v-model="showParticleText" />
+  <div class="overflow-hidden">
+    <div fixed left-0 top-0 bg-yellow z-1 text-25px>
+      <div flex justify-between>
+        <label>Show particle text</label
+        ><input type="checkbox" v-model="showParticleText" />
+      </div>
+      <div flex justify-between>
+        <label>Blend particles instead of border</label
+        ><input type="checkbox" v-model="blendParticles" />
+      </div>
+      <div flex justify-between>
+        <label>Particle color</label
+        ><input text-25px type="text" v-model="particleColor" />
+      </div>
+      <div flex justify-between>
+        <label>Storage color</label
+        ><input text-25px type="text" v-model="storageColor" />
+      </div>
+      <div flex justify-between>
+        <label>Background color</label
+        ><input text-25px type="text" v-model="backgroundColor" />
+      </div>
+      <div flex justify-between>
+        <label>Split factor</label
+        ><input text-25px type="text" v-model="splitFactor" />
+      </div>
+      <div flex justify-between>
+        <label>Show border</label><input type="checkbox" v-model="showBorder" />
+      </div>
     </div>
-    <div flex justify-between>
-      <label>Blend particles instead of border</label
-      ><input type="checkbox" v-model="blendParticles" />
-    </div>
-    <div flex justify-between>
-      <label>Particle color</label><input type="text" v-model="particleColor" />
-    </div>
-    <div flex justify-between>
-      <label>Storage color</label><input type="text" v-model="storageColor" />
-    </div>
-    <div flex justify-between>
-      <label>Show border</label><input type="checkbox" v-model="showBorder" />
-    </div>
-  </div>
-  <div
-    v-for="n in particles.length"
-    class="aspect-1 fixed left-0 top-0 rounded-full transition-transform ease-linear z--1 particles flexCenter text-black"
-    :style="{
-      transitionDuration: `${60000}ms`,
-      width: `${particles[n - 1].r}px`,
-      transform: `translate(${particles[n - 1].x}px, ${particles[n - 1].y}px)`,
-      mixBlendMode: blendParticles ? 'difference' : 'normal',
-      border: blendParticles ? 'none' : '1px solid black',
-      backgroundColor: particleColor,
-    }"
-  >
-    {{ showParticleText ? particles[n - 1].r.toFixed(0) + "Gt" : "" }}
-  </div>
-  <svg
-    id="mySvg"
-    :width="windowWidth + 'px'"
-    :height="windowHeight + 'px'"
-    class="fixed left-0 top-0"
-  >
-    <defs>
-      <filter
-        id="metaballFilter"
-        width="400%"
-        x="-150%"
-        height="400%"
-        y="-150%"
-      >
-        <feGaussianBlur
-          id="blurElement"
-          in="SourceGraphic"
-          stdDeviation="20"
-          result="blur"
-        />
-        <feColorMatrix
-          id="colorMatrixElement"
-          in="blur"
-          mode="matrix"
-          values="1 0 0 0  0
+    <!-- <div
+      class="text-16px text-white fixed left-0 top-0"
+      :style="{
+        transform: `translate(${500}px, ${500}px)`,
+      }"
+    >
+      30 Gt Potential Storage Above Ground
+    </div> -->
+    <svg
+      id="mySvg"
+      :width="windowWidth + 'px'"
+      :height="windowHeight + 'px'"
+      class="fixed left-0 top-0"
+    >
+      <defs>
+        <filter
+          id="metaballFilter"
+          width="400%"
+          x="-150%"
+          height="400%"
+          y="-150%"
+        >
+          <feGaussianBlur
+            id="blurElement"
+            in="SourceGraphic"
+            stdDeviation="20"
+            result="blur"
+          />
+          <feColorMatrix
+            id="colorMatrixElement"
+            in="blur"
+            mode="matrix"
+            values="1 0 0 0  0
                                                                                    0 1 0 0  0
                                                                                    0 0 1 0  0
                                                                                    0 0 0 25 -15"
-          result="matrix"
-        />
-      </filter>
-    </defs>
-    <g v-for="n in 9">
-      <g filter="url(#metaballFilter)">
+            result="matrix"
+          />
+        </filter>
+      </defs>
+      <g v-for="n in 9">
+        <g filter="url(#metaballFilter)">
+          <circle
+            v-show="data[n - 1].potential !== 200"
+            ref="el"
+            id="circle"
+            :cx="(windowWidth / 9) * n - windowWidth / 18"
+            :cy="ecosystems[n - 1].y"
+            :r="
+              ecosystems[n - 1].split
+                ? data[n - 1].potentialAbove / 2
+                : data[n - 1].potential / 2
+            "
+            :fill="
+              ecosystems[n - 1].split
+                ? aboveColor
+                : ecosystems[n - 1].showAboveBelow
+                ? storageColor
+                : particleColor
+            "
+            :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
+            :style="{
+              transitionProperty: 'all',
+              transitionDuration: '3500ms',
+              transitionTimingFunction: 'ease-out',
+            }"
+          />
+          <circle
+            v-show="data[n - 1].potential !== 200"
+            ref="el"
+            id="circle"
+            :cx="(windowWidth / 9) * n - windowWidth / 18"
+            :cy="
+              ecosystems[n - 1].split
+                ? ecosystems[n - 1].y + 200
+                : ecosystems[n - 1].y
+            "
+            :r="
+              ecosystems[n - 1].showAboveBelow
+                ? (data[n - 1].potentialBelow / 2) * splitFactor
+                : 0
+            "
+            :fill="
+              ecosystems[n - 1].split
+                ? belowColor
+                : ecosystems[n - 1].showAboveBelow
+                ? storageColor
+                : particleColor
+            "
+            :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
+            :style="{
+              transitionProperty: 'all',
+              transitionDuration: '3500ms',
+              transitionTimingFunction: 'ease-out',
+            }"
+          />
+          <circle
+            :id="'circle-' + ecosystems[n - 1].name"
+            :cx="(windowWidth / 9) * n - windowWidth / 18"
+            :cy="windowHeight / 2"
+            :r="
+              ecosystems[n - 1].showPotential
+                ? data[n - 1].potential === 200
+                  ? data[n - 1].totalCurrent / 2 + 7
+                  : (data[n - 1].totalPotential * magicScale) / 2 + 7
+                : ecosystems[n - 1].showCurrent
+                ? data[n - 1].totalCurrent / 2 + 7
+                : 0
+            "
+            :fill="n - 1 ? storageColor : '#122612'"
+            :style="{
+              transitionProperty: 'all',
+              transitionDelay: ecosystems[n - 1].showPotential
+                ? '1500ms'
+                : ecosystems[n - 1].split
+                ? '7000ms'
+                : '0ms',
+              transitionDuration: ecosystems[n - 1].showPotential
+                ? '500ms'
+                : '2000ms',
+              transitionTimingFunction: 'ease-out',
+            }"
+          />
+        </g>
         <circle
-          v-show="data[n - 1].potential !== 200"
-          ref="el"
-          id="circle"
-          :cx="(windowWidth / 9) * n - windowWidth / 18"
-          :cy="ecosystems[n - 1].y"
-          :r="
-            ecosystems[n - 1].split
-              ? data[n - 1].potentialAbove / 2
-              : (data[n - 1].potential / 2) * magicScale
-          "
-          :fill="
-            ecosystems[n - 1].showAboveBelow ? storageColor : particleColor
-          "
-          :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
-          class="transition-all duration-2000 ease-out"
-        />
-        <circle
-          v-show="data[n - 1].potential !== 200"
-          ref="el"
-          id="circle"
-          :cx="(windowWidth / 9) * n - windowWidth / 18"
-          :cy="
-            ecosystems[n - 1].split
-              ? ecosystems[n - 1].y + 200
-              : ecosystems[n - 1].y
-          "
-          :r="
-            ecosystems[n - 1].showAboveBelow
-              ? data[n - 1].potentialBelow / 2
-              : 0
-          "
-          :fill="
-            ecosystems[n - 1].showAboveBelow ? storageColor : particleColor
-          "
-          :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
-          class="transition-all duration-2000 ease-out"
-        />
-        <circle
-          :id="'circle-' + ecosystems[n - 1].name"
           :cx="(windowWidth / 9) * n - windowWidth / 18"
           :cy="windowHeight / 2"
-          :r="
-            ecosystems[n - 1].showPotential
-              ? data[n - 1].potential === 200
-                ? data[n - 1].totalCurrent / 2 + 7
-                : (data[n - 1].totalPotential * magicScale) / 2 + 7
-              : ecosystems[n - 1].showCurrent
-              ? data[n - 1].totalCurrent / 2 + 7
-              : 0
-          "
-          :fill="n - 1 ? storageColor : '#122612'"
+          :r="data[n - 1].totalCurrent / 2"
+          fill="transparent"
+          stroke="white"
           :style="{
-            transitionProperty: 'all',
-            transitionDelay: ecosystems[n - 1].showPotential ? '800ms' : '0ms',
-            transitionDuration: ecosystems[n - 1].showPotential
-              ? '500ms'
-              : '1000ms',
-            transitionTimingFunction: 'ease-out',
+            mixBlendMode: ecosystems[n - 1].showCurrent
+              ? 'normal'
+              : 'difference',
+          }"
+        />
+        <circle
+          v-show="data[n - 1].potential !== 200"
+          :cx="(windowWidth / 9) * n - windowWidth / 18"
+          :cy="windowHeight / 2"
+          :r="(data[n - 1].totalPotential * magicScale) / 2"
+          fill="transparent"
+          stroke="white"
+          :style="{
+            mixBlendMode: ecosystems[n - 1].showPotential
+              ? 'normal'
+              : 'difference',
+          }"
+        />
+        <circle
+          v-for="n in particles.length"
+          :cx="particles[n - 1].x"
+          :cy="particles[n - 1].y"
+          :r="particles[n - 1].r / 2"
+          :fill="particleColor"
+          :stroke="blendParticles ? 'transparent' : 'black'"
+          :style="{
+            transitionDuration: `${60000}ms`,
+            mixBlendMode: blendParticles ? 'difference' : 'normal',
           }"
         />
       </g>
-      <circle
-        :cx="(windowWidth / 9) * n - windowWidth / 18"
-        :cy="windowHeight / 2"
-        :r="data[n - 1].totalCurrent / 2"
-        fill="transparent"
-        stroke="white"
-        :style="{
-          mixBlendMode: ecosystems[n - 1].showCurrent ? 'normal' : 'difference',
-        }"
+    </svg>
+    <div class="w-screen h-screen overflow-hidden grid grid-cols-9 grid-rows-9">
+      <TokenNew
+        v-for="n in 9"
+        @showCurrent="showCurrent"
+        @showPotential="showPotential"
+        @showAboveBelow="showAboveBelow"
+        @exit="exit"
+        :ecosystem="ecosystems[n - 1]"
+        class="row-start-5 self-center justify-self-center"
       />
-      <circle
-        v-show="data[n - 1].potential !== 200"
-        :cx="(windowWidth / 9) * n - windowWidth / 18"
-        :cy="windowHeight / 2"
-        :r="(data[n - 1].totalPotential * magicScale) / 2"
-        fill="transparent"
-        stroke="white"
-        :style="{
-          mixBlendMode: ecosystems[n - 1].showPotential
-            ? 'normal'
-            : 'difference',
-        }"
-      />
-      <text x="200" y="400" fill="white">Hello my dear</text>
-    </g>
-  </svg>
-  <div class="w-screen h-screen overflow-hidden grid grid-cols-9 grid-rows-9">
-    <TokenNew
-      v-for="n in 9"
-      @showCurrent="showCurrent"
-      @showPotential="showPotential"
-      @showAboveBelow="showAboveBelow"
-      @exit="exit"
-      :ecosystem="ecosystems[n - 1]"
-      class="row-start-5 self-center justify-self-center"
-    />
-  </div>
-  <div
-    class="fixed left-0 top-0 w-screen h-screen flexCenter pointer-events-none"
-  >
+    </div>
     <div
-      v-show="showBorder"
-      class="border-yellow border-solid border-1px w-3840px h-2160px"
-    ></div>
+      class="fixed left-0 top-0 w-screen h-screen flexCenter pointer-events-none"
+    >
+      <div
+        v-show="showBorder"
+        class="border-yellow border-solid border-1px w-3840px h-2160px"
+      ></div>
+    </div>
   </div>
 </template>
 
@@ -187,7 +226,11 @@ const showParticleText = ref(false);
 const blendParticles = ref(true);
 const particleColor = ref("gray");
 const storageColor = ref("rgb(0, 50,0)");
+const aboveColor = ref("rgb(0, 90,0)");
+const belowColor = ref("rgb(0, 70,0)");
 const showBorder = ref(true);
+const backgroundColor = ref("black");
+const splitFactor = ref(2);
 
 // let setParticles = 0;
 for (let i = 0; i < 40; i++) {
@@ -396,12 +439,12 @@ function showCurrent(index) {
 function showAboveBelow(index) {
   ecosystems.value[index].showAboveBelow = true;
   ecosystems.value[index].showPotential = false;
-  ecosystems.value[index].y = 600;
+  ecosystems.value[index].y = 700;
   setTimeout(() => {
     ecosystems.value[index].showCurrent = false;
-    ecosystems.value[index].y = 400;
+    ecosystems.value[index].y = 500;
     ecosystems.value[index].split = true;
-  }, 2000);
+  }, 3000);
 }
 
 function exit(index) {
@@ -430,9 +473,26 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style lang="scss">
 html {
   background-color: black;
-  font-family: "Helvetica Neue" !important;
+  font-family: Arial, "Helvetica Neue", Helvetica !important;
+}
+
+label {
+  font-size: 25px;
+}
+
+input[type="text"] {
+  font-size: 25px;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+
+img {
+  object-fit: cover;
 }
 </style>

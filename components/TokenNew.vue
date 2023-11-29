@@ -11,34 +11,61 @@
     <div
       @click="sideToggled = false"
       v-if="step > 0"
-      class="absolute bg-yellow rounded-full flexCenter transition-all duration-1000 animate__animated animate__zoomIn border-5px border-yellow border-solid text-30px text-center"
+      class="absolute rounded-full flexCenter animate__animated animate__zoomIn border-5px text-30px text-center border-black border-solid border-1px"
       :style="{
         width: sideToggled ? '100px' : '500px',
         height: sideToggled ? '100px' : '500px',
         transform: sideToggled
-          ? `translate(0, ${1080}px)`
+          ? `translate(0, ${1000}px)`
           : `translate(0, ${700}px)`,
+        background: step === 4 ? 'transparent' : 'yellow',
+        border: step === 4 ? 'transparent' : '5px solid yellow',
       }"
     >
-      {{ sideToggled ? "switch side" : step === 4 ? "" : infoText }}
+      <div v-show="sideToggled">Switch side</div>
+      <div v-show="!sideToggled && step !== 4" class="flexCenter flex-col p-3">
+        <div v-if="step !== 3">
+          <h1 text-50px>{{ info.amount }}</h1>
+          <p class="p-5">{{ info.text }}</p>
+        </div>
+        <div v-else>
+          <h1 text-40px>{{ info.amount }}</h1>
+          <h1 text-40px>{{ info.amount2 }}</h1>
+          <p class="p-5">{{ info.text }}</p>
+        </div>
+      </div>
       <div
-        class="relative rounded-full w-500px aspect-1"
+        class="relative rounded-full w-500px aspect-1 animate__animated animate__zoomIn mt--500px"
         v-show="!sideToggled && step === 4"
-        @click="changeImage()"
       >
         <img
-          :src="`/info/${ecosystem.name.toLowerCase()}_${imageNumber}.jpg`"
-          class="rounded-full w-500px aspect-1"
+          :src="`/info/${ecosystem.shortName.toLowerCase()}/${imageNumber}.jpg`"
+          class="rounded-full w-400px aspect-1"
+          @click="toggleImage = !toggleImage"
+          :style="{
+            zIndex: toggleImage ? 1 : -1,
+          }"
         />
         <div
-          class="absolute bg-yellow w-full aspect-1 rounded-full mt--100px flexCenter flex-col border-black border-solid border-1px"
+          @click="changeImage()"
+          class="absolute w-full aspect-1 rounded-full mt--100px flexCenter flex-col border-black border-solid border-1px animate__animated animate__zoomIn"
+          :style="{
+            zIndex: toggleImage ? -1 : 1,
+            background: 'yellow',
+          }"
         >
-          <h1 class="font-bold">Conservation</h1>
-          <p class="p-5">
-            What Pete does can Esther too.<br />
-            What Pete does can Esther too.<br />
-            What Pete does can Esther too
-          </p>
+          <template v-if="imageNumber === 1">
+            <h1 class="font-bold">Conservation</h1>
+            <p class="p-5">
+              What Pete does can Esther too.<br />
+              What Pete does can Esther too.<br />
+              What Pete does can Esther too
+            </p>
+          </template>
+          <template v-else>
+            <h1 class="font-bold">Further infos</h1>
+            <img class="w-200px aspect-1 p-5" :src="qrcode" />
+          </template>
         </div>
       </div>
     </div>
@@ -51,7 +78,7 @@
         height: sideToggled ? '500px' : '100px',
         transform: sideToggled
           ? `rotate(180deg) translate(0, ${700}px)`
-          : `rotate(180deg) translate(0, ${1080}px)`,
+          : `rotate(180deg) translate(0, ${1000}px)`,
       }"
     >
       {{ !sideToggled ? "switch side" : step === 4 ? "" : infoText }}
@@ -70,8 +97,8 @@
           <h1 class="font-bold">Conservation</h1>
           <p class="p-5">
             What Pete does can Esther too.<br />
-            What Pete does can Esther too.<br />
-            What Pete does can Esther too
+            What Esther does can Esther too.<br />
+            What Pete does can Arlind too.
           </p>
         </div>
       </div>
@@ -89,11 +116,18 @@ const emit = defineEmits([
   "showAboveBelow",
   "exit",
 ]);
+const qrcode = useQR("https://neve.rsvp", {
+  margin: 0,
+  errorCorrectionLevel: "H",
+  color: {
+    dark: "#000",
+    light: "#fff0",
+  },
+});
 
 const sideToggled = ref(false);
-
+const toggleImage = ref(false);
 const tokenImage = computed(() => {
-  console.log(props.ecosystem.name.toLowerCase());
   let string = `url("/ecosystems/${props.ecosystem.name.toLowerCase()}.jpeg")`;
   return string;
 });
@@ -115,23 +149,56 @@ function stepper() {
   else step.value = 0;
 }
 
-const infoText = computed(() => {
+const info = computed(() => {
   if (step.value === 0) {
-    return "";
+    return {
+      title: "Welcome",
+      amount: "Leave me alone",
+      text: "Should not be shown",
+    };
   } else if (step.value === 1) {
-    return "Welcome you see current";
+    return {
+      title: "Potential",
+      amount: "800 Gt",
+      text: "This is the amount of CO2 currently stored in the ecosystem",
+    };
   } else if (step.value === 2) {
-    return "You see now potential";
+    if (props.ecosystem.noPotential) {
+      return {
+        title: "Info",
+        text: "Uups, there is no data available for this ecosystem. Turn the wheel.",
+      };
+    }
+    return {
+      title: "Current",
+      amount: "287 Gt",
+      text: "Amount of CO2 that potentially can be stored in the ecosystem",
+    };
   } else if (step.value === 3) {
-    return "You now see above and below stuff";
+    if (props.ecosystem.noPotential) {
+      return {
+        title: "Info",
+        text: "Uups, there is no data available for this ecosystem. Turn the wheel.",
+      };
+    }
+    return {
+      title: "Above & Below",
+      amount: "100Gt Above Ground +",
+      amount2: "187 Gt Below Ground",
+      text: "Amount of CO2 that potentially can be stored in the ecosystem",
+    };
   } else if (step.value === 4) {
-    return "I am information about the project";
+    return {
+      title: "Info",
+      text: "Amount of CO2 currently stored in the ecosystem",
+    };
   }
 });
 
 const imageNumber = ref(1);
 function changeImage() {
-  if (imageNumber.value < 4) imageNumber.value++;
+  console.log("change image");
+  if (imageNumber.value < 2) imageNumber.value++;
   else imageNumber.value = 1;
 }
 </script>

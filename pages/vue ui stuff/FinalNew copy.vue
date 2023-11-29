@@ -14,9 +14,6 @@
     <div flex justify-between>
       <label>Storage color</label><input type="text" v-model="storageColor" />
     </div>
-    <div flex justify-between>
-      <label>Show border</label><input type="checkbox" v-model="showBorder" />
-    </div>
   </div>
   <div
     v-for="n in particles.length"
@@ -77,10 +74,7 @@
               ? data[n - 1].potentialAbove / 2
               : (data[n - 1].potential / 2) * magicScale
           "
-          :fill="
-            ecosystems[n - 1].showAboveBelow ? storageColor : particleColor
-          "
-          :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
+          :fill="particleColor"
           class="transition-all duration-2000 ease-out"
         />
         <circle
@@ -90,7 +84,7 @@
           :cx="(windowWidth / 9) * n - windowWidth / 18"
           :cy="
             ecosystems[n - 1].split
-              ? ecosystems[n - 1].y + 200
+              ? ecosystems[n - 1].y + 500
               : ecosystems[n - 1].y
           "
           :r="
@@ -98,10 +92,7 @@
               ? data[n - 1].potentialBelow / 2
               : 0
           "
-          :fill="
-            ecosystems[n - 1].showAboveBelow ? storageColor : particleColor
-          "
-          :stroke="ecosystems[n - 1].showAboveBelow ? 'white' : 'transparent'"
+          :fill="particleColor"
           class="transition-all duration-2000 ease-out"
         />
         <circle
@@ -151,7 +142,6 @@
             : 'difference',
         }"
       />
-      <text x="200" y="400" fill="white">Hello my dear</text>
     </g>
   </svg>
   <div class="w-screen h-screen overflow-hidden grid grid-cols-9 grid-rows-9">
@@ -165,13 +155,8 @@
       class="row-start-5 self-center justify-self-center"
     />
   </div>
-  <div
-    class="fixed left-0 top-0 w-screen h-screen flexCenter pointer-events-none"
-  >
-    <div
-      v-show="showBorder"
-      class="border-yellow border-solid border-1px w-3840px h-2160px"
-    ></div>
+  <div class="fixed left-0 top-0 w-screen h-screen flexCenter">
+    <div class="border-yellow border-solid border-1px w-3840px h-2160px"></div>
   </div>
 </template>
 
@@ -187,7 +172,6 @@ const showParticleText = ref(false);
 const blendParticles = ref(true);
 const particleColor = ref("gray");
 const storageColor = ref("rgb(0, 50,0)");
-const showBorder = ref(true);
 
 // let setParticles = 0;
 for (let i = 0; i < 40; i++) {
@@ -323,7 +307,6 @@ for (let i = 0; i < 9; i++) {
     index: i,
     currentRadius: data[i].totalCurrent,
     potentialRadius: data[i].totalPotential * magicScale,
-    noPotential: data[i].potential === 200,
   });
   useTextEllipse({
     text: data[i].ecosystem,
@@ -396,10 +379,10 @@ function showCurrent(index) {
 function showAboveBelow(index) {
   ecosystems.value[index].showAboveBelow = true;
   ecosystems.value[index].showPotential = false;
-  ecosystems.value[index].y = 600;
+  ecosystems.value[index].y = 900;
   setTimeout(() => {
     ecosystems.value[index].showCurrent = false;
-    ecosystems.value[index].y = 400;
+    ecosystems.value[index].y = 600;
     ecosystems.value[index].split = true;
   }, 2000);
 }

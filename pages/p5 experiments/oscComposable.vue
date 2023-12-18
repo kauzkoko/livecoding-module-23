@@ -12,6 +12,7 @@
         transitionDuration: n * 20 + 'ms',
       }"
     ></div>
+
     <button @click="send()">send {{ x }}</button>
   </div>
 </template>

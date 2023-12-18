@@ -1,0 +1,60 @@
+nice ones strudel
+s("bd sd").echo(3, 1/8, 3)
+
+s("lt ht mt cp, [hh oh]*2").linger("<1 .5 .25 .125>")
+
+n(rand.range(0,12).segment(8).round())
+.scale("C:ritusen")
+.s("folkharp")
+
+n(rand.range(0,24).segment(8).round())
+.scale("C:ritusen")
+.s("casio:2")
+
+let inverse = 2
+n(rand.range(0,7).add(cat("<0 7 14>")).mul(6).segment(16/inverse).round())
+.scale("C:major")
+.s("piano")
+.slow(2/inverse)
+
+
+s("<lt lt*2> ht*2 mt cp*2, [hh oh]*2").linger("<1 .5 .25 .5 1 1 .5 .25>")
+
+s("bd*2 sd*2 rim rim*2, hh*16").cpm(165/4)
+
+s("bd sd,[~ hh]*2").bank("CasioRZ1")
+  .off(1/8, x=>x.speed(1.5).gain(5))
+
+s("bd sd bd [<rim*2 rim*4>, bd*2, <hh:2*4 hh:3>], hh*8").cpm(165/4)
+
+s(`<
+[bd sd bd rim, hh*8] 
+[bd sd bd rim:<2 3 4>*<4 8 .5 2>, hh*8]
+>`).cpm(110/4)
+
+s(`<
+[bd hh*4 rim]@2*2
+[bd hh rim <sd*2 sd:2>]@5*7
+>`).cpm("<200 250 300 350 400 10!10>")
+
+s("<bd hh hh bd hh hh bd rim bd hh>*5,hh:3/2,bd")
+
+samples({
+  'gtr': 'gtr/0001_cleanC.wav',
+  'moog': { 'g3': 'moog/005_Mighty%20Moog%20G3.wav' },
+}, 'github:tidalcycles/Dirt-Samples/master/');
+note("g3 [bb3 c4] <g4 f4 eb4 f3>!3@4").s("gtr,moog").clip(1)
+  .gain(.5)
+
+await samples('shabda/speech/de-DE/f:hallo,wie,gehts,man,mir,gehts,gut')
+stack(
+  s("<wie gehts man> <mir gehts gut>").speed(2),
+)
+
+await samples('shabda/speech/de-DE/f:hallo,du,wie,gehts,man,mir,gehts,gut')
+await samples('shabda/speech/en-GB/f:get,the,qr,codes,by,scanning,them,lol,quar,qur,qar')
+stack(
+  s("get the <qr qur qar> codes by scanning!3 them*2!2").speed(.5).cpm(60/5),
+  s("bd <hh*2 hh*4>").room(".5"),
+  s("hallo du").cpm(60/20)
+)

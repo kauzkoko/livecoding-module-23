@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <input type="text" v-model="input" />
+  <div w-screen h-screen flexCenter>
     <img :src="qrcode" class="yes" />
   </div>
 </template>
 
 <script setup>
-const input = ref("nothing yet");
-const qrcode = useQR(input, {
+const qrcode = useQR("2", {
   margin: 0,
   errorCorrectionLevel: "L",
 });

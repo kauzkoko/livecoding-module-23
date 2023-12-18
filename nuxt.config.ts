@@ -4,7 +4,11 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: false,
   unocss: {
-    shortcuts: [{ flexCenter: "flex justify-center items-center" }],
+    shortcuts: [
+      { flexCenter: "flex justify-center items-center" },
+      { diff: "mix-blend-difference" },
+      { normal: "mix-blend-normal" },
+    ],
   },
   runtimeConfig: {
     openaiKey: process.env.OPENAI_KEY,

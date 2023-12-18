@@ -13,9 +13,6 @@ onMounted(() => {
   osc.open();
   console.log("osc opened");
   osc.on("*", (message) => {
-    if (address === "/strudel2") {
-      test.value = message.args[0];
-    }
     console.log(message);
   });
 });

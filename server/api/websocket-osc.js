@@ -14,7 +14,7 @@ async function main() {
   const soundsChannel = supabase.channel("soundsChannel");
 
   osc.on("*", ({ address, args }) => {
-    console.log("should be sound", args[7]);
+    console.log("should be sound", address);
     if (address === "/dirt/play") {
       osc.send(new OSC.Message("/fromstrudel", args[7]));
     }

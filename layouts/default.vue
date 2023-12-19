@@ -1,6 +1,5 @@
 <template>
   <div>
-    <VitePwaManifest />
     <slot />
     <div>
       <NuxtLink

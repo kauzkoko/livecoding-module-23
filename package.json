@@ -24,6 +24,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.1",
     "@svgdotjs/svg.js": "^3.2.0",
     "@tresjs/cientos": "^3.6.0",
     "@tresjs/nuxt": "^1.2.2",

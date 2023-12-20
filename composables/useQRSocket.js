@@ -8,7 +8,7 @@ export const useQRSocket = () => {
   let cornerPoints = ref();
 
   onMounted(() => {
-    channel = supabase.channel("room_1");
+    channel = supabase.channel("qr-room");
     console.log(channel);
 
     channel

@@ -7,17 +7,17 @@
     <input type="range" step="1" min="0" max="255" v-model="slider4" />
   </div>
   <div
-    class="wrapper grid grid-cols-16 dashy"
+    class="wrapper grid grid-cols-32 dashy"
     :style="{ background: `rgba(${slider}, 0, 255, 1)` }"
   >
-    <div v-for="n in 128" class="smallCircle bg-white">
+    <div v-for="n in 256" class="smallCircle bg-white">
       <div
         class="smallerCircle bg-black transform-gpu scale-$scale duration-50 ease-in-out"
       >
         <div class="smallerCircle bg-blue ml-$mlleft">
-          <div class="smallerCircle bg-$color diff opacity-50">
+          <div class="smallerCircle bg-$color">
             <div
-              class="smallerCircle bg-green ml-$mlleft transform-gpu scale-$scale diff opacity-50"
+              class="smallerCircle bg-green ml-$mlleft transform-gpu scale-$scale"
             ></div>
           </div>
         </div>

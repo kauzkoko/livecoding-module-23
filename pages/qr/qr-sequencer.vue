@@ -9,21 +9,23 @@
 
 <script setup>
 import QrScanner from "qr-scanner";
-const { sendQrData, x, y } = useQRSocket();
+const { sendQrData } = useQrSequencer();
 
 const videoElem = ref();
 const qrScanner = ref();
 const code = ref("");
 const codeCounter = ref(0);
+const sendQrThrottled = useThrottleFn((qrData) => {
+  sendQrData.value(qrData);
+}, 2000);
 
 onMounted(() => {
   qrScanner.value = new QrScanner(
     videoElem.value,
     (data) => {
-      console.log(data);
       code.value = data.data;
       codeCounter.value++;
-      sendQrData.value("client1", code.value);
+      sendQrThrottled(code.value);
     },
     { returnDetailedScanResult: true, highlightScanRegion: true }
   );

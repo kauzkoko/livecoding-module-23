@@ -7,12 +7,10 @@ let key =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDE3NTkyOCwiZXhwIjoxOTU1NzUxOTI4fQ.o9wiw4AmdmTkon2fxMrfD8Y3F0AgxLCeQRMwlPWjW-0";
 
 async function main() {
-  //start osc / local websocket server
   const osc = new OSC({ plugin: new OSC.WebsocketServerPlugin() });
   osc.open();
   console.log("osc server open");
 
-  //start second local websocket server and forward all messages
   const wss = new WebSocket.Server({ port: 8081 });
   console.log("ws server open");
   wss.on("connection", (ws) => {
@@ -20,12 +18,7 @@ async function main() {
     ws.on("message", (message) => {
       const buffer = Buffer.from(message);
       const string = buffer.toString("utf-8");
-      // const json = JSON.parse(string);
-      // console.log("ws 8081 message received", string);
       wss.clients.forEach((client) => {
-        // if (client.readyState === WebSocket.OPEN) {
-        //   client.send(string);
-        // }
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(string);
         }
@@ -36,7 +29,6 @@ async function main() {
     });
   });
 
-  //start supabase websocket (internet) client
   const supabase = createClient(url, key);
   const soundsChannel = supabase.channel("soundsChannel");
 

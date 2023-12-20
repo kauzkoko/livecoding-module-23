@@ -1,5 +1,7 @@
 import OSC from "osc-js";
+import WebSocket from "ws";
 import { createClient } from "@supabase/supabase-js";
+
 let url = process.env.SUPABASE_URL;
 let key = process.env.SUPABASE_KEY;
 
@@ -8,6 +10,30 @@ async function main() {
   const osc = new OSC({ plugin: new OSC.WebsocketServerPlugin() });
   osc.open();
   console.log("osc server open");
+
+  //start second local websocket server and forward all messages
+  const wss = new WebSocket.Server({ port: 8081 });
+  console.log("ws server open");
+  wss.on("connection", (ws) => {
+    console.log("ws 8081 client connected");
+    ws.on("message", (message) => {
+      const buffer = Buffer.from(message);
+      const string = buffer.toString("utf-8");
+      // const json = JSON.parse(string);
+      // console.log("ws 8081 message received", string);
+      wss.clients.forEach((client) => {
+        // if (client.readyState === WebSocket.OPEN) {
+        //   client.send(string);
+        // }
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(string);
+        }
+      });
+    });
+    ws.on("close", () => {
+      console.log("ws client disconnected");
+    });
+  });
 
   //start supabase websocket (internet) client
   const supabase = createClient(url, key);
@@ -20,7 +46,6 @@ async function main() {
     }
   });
 
-  //send server alive message once osc server is open (assume 2 seconds to start up)
   setTimeout(() => {
     soundsChannel
       .on("broadcast", { event: "sound" }, ({ payload }) => {
@@ -28,10 +53,6 @@ async function main() {
         osc.send(new OSC.Message("/fromwebclient", payload.sound));
       })
       .subscribe();
-
-    setInterval(() => {
-      osc.send(new OSC.Message("/fromserver", "hello from server, im alive"));
-    }, 1000);
   }, 2000);
 }
 

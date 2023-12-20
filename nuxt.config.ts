@@ -7,6 +7,10 @@ export default defineNuxtConfig({
       { flexCenter: "flex justify-center items-center" },
       { diff: "mix-blend-difference" },
       { normal: "mix-blend-normal" },
+      {
+        circle:
+          "bg-white w-100px aspect-1 rounded-full transition-all duration-200",
+      },
     ],
   },
   supabase: {

@@ -39,6 +39,7 @@
     "@vueuse/integrations": "latest",
     "@vueuse/math": "latest",
     "animate.css": "latest",
+    "dotenv": "^16.3.1",
     "matter-js": "latest",
     "osc-js": "latest",
     "unocss": "latest"

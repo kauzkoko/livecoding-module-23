@@ -1,6 +1,3 @@
-import OSC from "osc-js";
-import WebSocket from "ws";
-
 async function main() {
   const wss = new WebSocket.Server({ port: 8081 });
   console.log("ws server open");

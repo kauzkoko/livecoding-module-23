@@ -43,6 +43,7 @@
     "matter-js": "latest",
     "osc-js": "latest",
     "qr-scanner": "^1.4.2",
-    "unocss": "latest"
+    "unocss": "latest",
+    "ws": "^8.15.1"
   }
 }

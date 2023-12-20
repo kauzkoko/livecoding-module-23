@@ -17,8 +17,7 @@
     "@vueuse/core": "latest",
     "@vueuse/nuxt": "latest",
     "nuxt": "latest",
-    "sass": "latest",
-    "vite": "^5.0.10"
+    "sass": "latest"
   },
   "dependencies": {
     "@strudel.cycles/core": "^0.9.0",

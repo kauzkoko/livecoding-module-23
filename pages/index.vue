@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div bg-white>
     <div v-for="route in routes">
       <a class="text-20px" :href="route.path" v-if="route.name !== 'index'">{{
         route.name.split("-")[0] + "/" + route.name.split("-")[1]

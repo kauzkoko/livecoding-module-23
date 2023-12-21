@@ -1,10 +1,10 @@
 <template>
   <div class="overflow-hidden w-screen h-screen">
     <input type="text" v-model="input" />
-    <div class="w-screen h-screen flexCenter overflow-hidden">
+    <div class="w-$width h-screen flexCenter overflow-hidden">
       <div
         v-for="black in showArray"
-        class="h-$height aspect-1 w-full overflow-hidden bg-red transition-all linear duration-0"
+        class="h-$height aspect-1 overflow-hidden bg-red transition-all linear duration-50"
         :style="{
           opacity: black ? 1 : 0,
         }"
@@ -22,6 +22,7 @@
 
 <script setup>
 const height = css("height", "10px");
+const width = css("width", "100vw");
 const { data } = useWebSocket("ws://localhost:8081");
 const parsed = computed(() => {
   if (data.value) {
@@ -34,14 +35,13 @@ const parsed = computed(() => {
 
 watch(parsed, (p) => {
   if (p.s === "bd") {
-    height.value = "100px";
-  } else if (p.s === "sd") {
-    height.value = "10px";
+    height.value = Math.floor(Math.random() * 500) + "px";
+  } else if (p.s === "hh") {
+    // width.value = Math.floor(Math.random() * 500) + "px";
+  } else if (p.s === "gm_synth_bass_1") {
   } else if (p.s === "cp") {
-    height.value = "50px";
-    input.value = Math.floor(Math.random() * 100);
+    input.value = "" + Math.floor(Math.random() * 10000);
   } else {
-    height.value = "5px";
   }
 });
 

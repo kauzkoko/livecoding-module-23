@@ -9,9 +9,9 @@
     <div
       v-if="show"
       @click="startReading()"
-      class="fixed top-50vh left-50vw transform-gpu translate--50% bg-white rounded-full w-80vw aspect-1 flexCenter font-sans text-1.5em"
+      class="fixed top-50vh left-50vw transform-gpu translate--50% bg-white rounded-full w-80vw aspect-1 flexCenter font-sans text-1em"
     >
-      <div>press and allow to start</div>
+      <div>click me and enable camera to start scanning qr codes</div>
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ setPageLayout("none");
 
 const show = ref(true);
 const videoElem = ref();
+const { play } = useAnimate(videoElem, { transform: "rotate(360deg)" }, 700);
 const qrScanner = ref();
 const code = ref("");
 const codeCounter = ref(0);
@@ -30,6 +31,7 @@ const toggleCounter = ref(0);
 const sendQrThrottled = useThrottleFn((qrData) => {
   sendQrData.value(qrData);
   toggleCounter.value++;
+  play();
 }, 2000);
 
 onMounted(() => {

@@ -1,21 +1,25 @@
 <template>
   <Console :values="parsed"></Console>
   <div
-    class="wrapper grid grid-cols-4 dashy"
-    :style="{ gridTemplateColumns: `1fr 2fr ${fr}fr` }"
+    class="wrapper grid grid-cols-8 dashy"
+    :style="{ gridTemplateColumns: false ? `2fr ${fr}fr 1fr 1fr` : 'initial' }"
   >
     <div v-for="n in amount" class="line">
       <div circle bg-red>
-        <div class="ml-$mlleft" smallerCircle bg-yellow></div>
+        <div class="ml-$mlleft" smallerCircle bg-yellow>
+          <div class="smallerRect">
+            <div class="smallerRect bg-red"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-const amount = ref(64);
+const amount = ref(128);
 const mlleft = css("mlleft", "10px");
-const fr = ref(10);
+const fr = ref(5);
 // const color = css("color", "red");
 // const scale = css("scale", 1);
 const { data } = useWebSocket("ws://localhost:8081");

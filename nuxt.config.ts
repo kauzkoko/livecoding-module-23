@@ -46,6 +46,10 @@ export default defineNuxtConfig({
         line: "bg-white w-80% h-5px transition-all duration-200 transform-gpu m-y-5 m-x-3",
       },
       {
+        smallerLine:
+          "bg-white w-80% h-5px transition-all duration-200 transform-gpu m-y-5 m-x-3",
+      },
+      {
         wrapper: "w-screen h-screen overflow-hidden bg-black",
       },
       {

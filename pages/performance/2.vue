@@ -1,5 +1,5 @@
 <template>
-  <div text-white>{{ parsed }}</div>
+  <!-- <div text-white>{{ parsed }}</div> -->
   <div
     class="wrapper grid grid-cols-16 dashy"
     :style="{ background: `rgba(${slider}, 1)` }"

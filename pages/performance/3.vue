@@ -1,5 +1,5 @@
 <template>
-    <div text-white>{{ test }}</div>
+    <div text-gray>{{ test }}</div>
     <div
       class="wrapper grid grid-cols-8 dashy flexCenter"
       :style="{ background: `rgba(${slider}, 1)` }"
@@ -7,9 +7,9 @@
         <div v-for="n in test" :style="{
             opacity: n ? '100%' : 0
         }" class="bg-white w-100px h-$height">
-        <div class="smallerCircle bg-$color">
+        <!-- <div class="smallerCircle bg-$color flex flex-col">
             <div class="smallerLine bg-black"></div>
-        </div>
+        </div> -->
     </div>
     </div>
   </template>
@@ -38,6 +38,8 @@
       mlleft.value = "0px";
       color.value = "blue";
     } else if (p.s === "sd") {
+      scale.value = 1.05;
+    } else if (p.s === "gm_fx_atmosphere") {
       scale.value = 1.05;
     } else if (p.qrData) {
         test.value = p.qrData

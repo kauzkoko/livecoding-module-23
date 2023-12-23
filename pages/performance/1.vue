@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-hidden w-screen h-screen">
-    <input type="text" v-model="input" />
+    <input type="text" class="bg-dark-900f" v-model="input" />
     <div class="w-$width h-screen flexCenter overflow-hidden">
       <div
         v-for="black in showArray"
@@ -39,6 +39,9 @@ watch(parsed, (p) => {
   } else if (p.s === "hh") {
     // width.value = Math.floor(Math.random() * 500) + "px";
   } else if (p.s === "gm_synth_bass_1") {
+  } else if (p.s === "gm_") {
+  } else if (p.s === "gm_synth_drum") {
+  } else if (p.s === "gm_fretless_bass") {
   } else if (p.s === "cp") {
     input.value = "" + Math.floor(Math.random() * 10000);
   } else {

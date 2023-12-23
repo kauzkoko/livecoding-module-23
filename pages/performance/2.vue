@@ -1,21 +1,21 @@
 <template>
-  <!-- <div text-white>{{ parsed }}</div> -->
+  <div text-white>{{ parsed }}</div>
   <div
     class="wrapper grid grid-cols-16 dashy"
     :style="{ background: `rgba(${slider}, 1)` }"
   >
     <div v-for="n in 128" class="smallCircle bg-white scale-$scale">
-      <!-- <div
+      <div
         class="smallerCircle bg-black transform-gpu scale-$scale duration-50 ease-in-out"
       >
         <div class="smallerCircle bg-bwhite ml-$mlleft">
           <div class="smallerCircle bg-$color">
             <div
-              class="smallerCircle bg-yellow ml-$mlleft transform-gpu scale-$scale"
+              class="smallerCircle bg-red ml-$mlleft transform-gpu scale-$scale"
             ></div>
           </div>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -44,7 +44,7 @@ watch(parsed, (p) => {
     scale.value = 1.05;
   } else if (p.s === "gm_fx_echoes") {
     scale.value = 1.1;
-  } else if (p.s === "hh") {
+  } else if (p.s === "bd") {
     scale.value = 1.2;
   } else {
     scale.value = 1;

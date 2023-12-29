@@ -21,6 +21,7 @@
     "vite": "^5.0.10"
   },
   "dependencies": {
+    "@juliangarnierorg/anime-beta": "^4.0.0-beta.94",
     "@strudel.cycles/core": "^0.9.0",
     "@strudel.cycles/csound": "^0.9.0",
     "@strudel.cycles/midi": "^0.9.0",
@@ -40,6 +41,7 @@
     "@vueuse/math": "latest",
     "animate.css": "latest",
     "dotenv": "^16.3.1",
+    "hydra-synth": "^1.3.29",
     "matter-js": "latest",
     "osc-js": "latest",
     "qr-scanner": "^1.4.2",

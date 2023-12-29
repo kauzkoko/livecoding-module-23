@@ -11,7 +11,7 @@
         <div class="smallerCircle bg-bwhite ml-$mlleft">
           <div class="smallerCircle bg-$color">
             <div
-              class="smallerCircle bg-red ml-$mlleft transform-gpu scale-$scale"
+              class="line bg-red ml-$mlleft transform-gpu scale-$scale"
             ></div>
           </div>
         </div>

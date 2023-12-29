@@ -1,6 +1,6 @@
 <template>
   <div class="overflow-hidden w-screen h-screen">
-    <input type="text" class="bg-dark-900f" v-model="input" />
+    <!-- <input type="text" class="bg-dark-900f" v-model="input" /> -->
     <div class="w-$width h-screen flexCenter overflow-hidden">
       <div
         v-for="black in showArray"
@@ -14,7 +14,7 @@
       class="fixed left-0 top-0 w-screen h-screen flexCenter pointer-events-none"
     >
       <div>
-        <img :src="hakanyakim" class="w-300px aspect-1" />
+        <img :src="hakanyakim" class="w-300px aspect-1" sine="blur-10px" />
       </div>
     </div>
   </div>

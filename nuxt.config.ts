@@ -73,4 +73,12 @@ export default defineNuxtConfig({
       ],
     },
   },
+  devServer: {
+    port: 3333,
+  },
+  vite: {
+    define: {
+      "window.global": {},
+    },
+  },
 });

@@ -1,0 +1,2 @@
+[install.scopes]
+"@juliangarnierorg" = { token = "github token", url = "https://npm.pkg.github.com/" }

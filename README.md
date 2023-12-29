@@ -1,78 +1,26 @@
+# live coding stuff
+
+repo for final perfomance in live coding module
+
+## technical setup
+
+audio/visuals: flok strudel / strudel.cc <-> local websocket <-> vue
+
+crowd interaction: thermal printer paper printed qr codes sequencer -> supabase websocket -> local websocket -> strudel / vue
+
+flok strudel final performance link: https://next.flok.cc/s/sticky-ivory-elk-ebeacb83 or see strudel_final.txt in /public/ directory
+
+pages used for final performance: /pages/performance/1 2 3
+
+find websocket servers here: https://github.com/kauzkoko/livecoding-servers/tree/main
+
+## install / run
+
+1. clone repo
+2. install bun via homebrew or npm install -g bun
+3. `cd` to repo
+4. `bun install`
+5. `bun run dev`
+
 to run it in https mode do the following in terminal:
-NODE_TLS_REJECT_UNAUTHORIZED=0 bun dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem
-
-# Nuxt 3 Minimal Starter
-
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+`NODE_TLS_REJECT_UNAUTHORIZED=0 bun dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem`

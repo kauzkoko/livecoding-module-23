@@ -21,7 +21,6 @@
     "vite": "^5.0.10"
   },
   "dependencies": {
-    "@juliangarnierorg/anime-beta": "^4.0.0-beta.94",
     "@strudel.cycles/core": "^0.9.0",
     "@strudel.cycles/csound": "^0.9.0",
     "@strudel.cycles/midi": "^0.9.0",

@@ -1,0 +1,69 @@
+//THIS IS THE PERFORMANCE VERSION!!!!!!
+find it on https://next.flok.cc/s/sticky-ivory-elk-ebeacb83
+///////////////////////////////////////
+
+let ref = (getter) =>
+  pure(1)
+    .withValue(() => reify(getter()))
+  
+    .innerJoin();
+
+let masterArray
+let sound
+let rsound = ref(() => sound)
+// masterArray = [1, 1, 1, 1, 1, 1, 1, 1]
+masterArray = [false, false, false, false, false, false, false, false]
+sound = 'bd'
+let rmasterArray = ref(() => masterArray)
+
+if (!window.socket || window.socket.readyState === WebSocket.CLOSED) {
+    window.socket = new WebSocket('ws://localhost:8081');
+}
+socket.onmessage = (event) => {
+    let parsed = JSON.parse(event.data)
+    if (parsed.from === 'qr') {
+      masterArray = seq(parsed.qrData)
+      console.log('master array', masterArray)
+      console.log(rmasterArray)
+    }
+};
+
+stack(
+  //// Starting sounds
+  // n("[0]*2 ~")
+  //   .scale("<A2:aeolian>")
+  //   .sound("gm_fx_atmosphere")
+  //   .lpf("<100 200 300 400 600  900 1200 2000 3000 5000 >")
+  //   .onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+
+  
+  // s(seq(rsound), "bd hh!3 bd bd bd").cpm(30).onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+
+  //// Drums patterns
+  // s(seq(rsound), "bd bd").bank("RolandTR909").onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+  // s(seq(rsound), "<cp!3 <hh*8 sd hh*4> hh!2 cp*2>").bank("RolandTR909").mask(rmasterArray).onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+  
+  // s("bd*2, ~ <sd cp>, [~ hh]*2").bank("RolandTR909") // this drum pattern's rhythm sounds different in REPL!
+      // .onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+
+  //// bass synth<y
+  n("<-16 -16 -14 <-12 -10>>*2 ~")
+    .scale("A:aeolian").lpf(000).sound("gm_fretless_bass").legato("<1>")
+    .onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+
+  // Lead Synths controlled by QRs
+  n("<[[[2] 7] [5] [2*2] [2 7]][[[2,4] 7] [5] [9 6] [5 4]]>/2")
+    .mask(rmasterArray) // mask doens't work here idk why? THEY ACTUALLY DO AHAHAH
+    .scale("<A2:aeolian>")
+    .legato(2)
+    .sound("gm_synth_bass_1")
+    .lpf(00)
+    .onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false),
+
+  // Lead Synths melodic
+   // n("<16 14 16> 14@1/2 14@1/2 <12 10 18>")
+   //   .scale("<A2:aeolian>")
+   //   .sound("gm_fx_echoes")
+   //   .lpf(800) // <------!!
+   //   .onTrigger((a, b) => socket.send(JSON.stringify({from: 'strudel', s: b.value.s})), false)
+)

@@ -22,6 +22,3 @@ logs
 .env
 .env.*
 !.env.example
-
-#custom animejs v4 beta
-bunfig.toml

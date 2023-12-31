@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import ReactivityTransform from "@vue-macros/reactivity-transform/vite";
+
 export default defineNuxtConfig({
   devtools: { enabled: false },
   ssr: false,
@@ -63,7 +65,12 @@ export default defineNuxtConfig({
   supabase: {
     redirect: false,
   },
-  modules: ["@unocss/nuxt", "@vueuse/nuxt", "@nuxtjs/supabase"],
+  modules: [
+    "@unocss/nuxt",
+    "@vueuse/nuxt",
+    "@nuxtjs/supabase",
+    "@vue-macros/nuxt",
+  ],
   app: {
     head: {
       script: [
@@ -80,5 +87,6 @@ export default defineNuxtConfig({
     define: {
       "window.global": {},
     },
+    plugins: [ReactivityTransform()],
   },
 });

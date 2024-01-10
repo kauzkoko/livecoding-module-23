@@ -3,6 +3,6 @@ module.exports = {
   useTabs: true,
   arrowParens: "always",
   bracketSameLine: false,
-  printWidth: 300,
+  printWidth: 500,
   bracketSpacing: true,
 };

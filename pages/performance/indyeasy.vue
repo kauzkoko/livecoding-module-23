@@ -1,7 +1,16 @@
 <template>
   <div class="wrapper flexCenter">
     <div class="grid grid-cols-8">
-      <div v-for="n in 64" circle class="bg-$color"></div>
+      <div v-for="n in 64" circle class="bg-$color">
+        <div class="smallerCircle scale-$scale bg-$text2">
+          <div
+            v-for="n in 5"
+            class="line transform-gpu bg-$text1 rotate-$rotation ml-$margin"
+          >
+            <div font-sans class="text-$text">ok gset scheisse us</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

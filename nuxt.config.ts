@@ -9,6 +9,9 @@ export default defineNuxtConfig({
       { flexCenter: "flex justify-center items-center" },
       { diff: "mix-blend-difference" },
       { normal: "mix-blend-normal" },
+      { fullscreen: "w-screen h-screen" },
+      { full: "w-full h-full" },
+      { centerme: "justify-self-center self-center" },
       {
         circle:
           "bg-white w-100px aspect-1 rounded-full transition-all duration-200 transform-gpu",
@@ -52,7 +55,7 @@ export default defineNuxtConfig({
           "bg-white w-80% h-5px transition-all duration-200 transform-gpu m-y-5 m-x-3",
       },
       {
-        wrapper: "w-screen h-screen overflow-hidden bg-black",
+        wrapper: "w-screen h-screen overflow-hidden bg-black text-white",
       },
       {
         dashy: "border-black border-dashed border-5px",

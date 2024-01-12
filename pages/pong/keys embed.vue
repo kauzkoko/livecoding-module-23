@@ -17,29 +17,13 @@
         <div v-for="n in 3" class="smallerLine"></div>
       </div>
     </div>
-    <div class="fixed right-0 top-0 w-25vw flex flex-col">
-      <textarea
-        v-model="strudelCode"
-        rows="20"
-        cols="50"
-        class="border-none bg-black text-green"
-      />
-      <div>
-        <button @click="play()">play</button>
-        <button @click="stop()">stop</button>
-        <div>
-          <label for="range">set window.kack variable</label
-          ><input
-            id="range"
-            type="range"
-            v-model="range"
-            step=".01"
-            min="0"
-            max="1"
-          />
-          <span>{{ range }}</span>
-        </div>
-      </div>
+    <div class="fixed right-0 top-0 w-25vw">
+      <Script src="/strudelembed.js"></Script>
+      <strudel-repl width="25vw">
+        <!--
+          s("bd sd, hh*4")
+      -->
+      </strudel-repl>
     </div>
   </div>
 </template>
@@ -47,48 +31,8 @@
 <script setup>
 import { initStrudel } from "@strudel/web";
 initStrudel({
-  prebake: () => samples("http://localhost:3000/samplemapping.json"),
+  prebake: () => samples("github:tidalcycles/Dirt-Samples/master"),
 });
-
-const keys = useMagicKeys();
-const Croco = keys["≥"];
-const AltDot = keys["Alt+."];
-const AltEnter = keys["Alt+Enter"];
-
-watch([Croco, AltDot], (v) => {
-  if (v) stop();
-});
-
-watch(AltEnter, (v) => {
-  if (v) play();
-});
-
-const range = ref(0.5);
-const strudelCode = ref(`
-
-//always leave this, init of range slider ref, ff to add more
-let ref = (getter) => pure(1).withValue(()=>reify(getter())).innerJoin();
-
-let panner = ref(()=> window.panner)
-
-//strudel stuff down here
-note("<g1>")
-.add(note("0,.1"))
-.s("sawtooth")
-.cpm(30)
-.speed(.5)
-.pan(panner)
-
-`);
-const play = () => {
-  console.log(strudelCode.value);
-  evaluate(strudelCode.value);
-};
-
-const stop = () => {
-  console.log("pause");
-  hush();
-};
 
 const { x } = useMouse();
 const { width, height } = useWindowSize();
@@ -115,8 +59,6 @@ watchEffect(() => {
 
   ballXCss.value = `${ballPosition.value[0] - ballSize.value / 2}px`;
   ballYCss.value = `${ballPosition.value[1] - ballSize.value / 2}px`;
-
-  window.panner = range.value;
 });
 
 let frameCount = 0;
@@ -126,19 +68,23 @@ const { pause, resume } = useRafFn(() => {
   }
 });
 
-onKeyStroke(["a", "A"], (e) => {
+onKeyStroke(["a", "A", "ArrowLeft"], (e) => {
+  e.preventDefault();
   ballPosition.value[0] -= ballSpeed.value;
 });
 
-onKeyStroke(["d", "D"], (e) => {
+onKeyStroke(["d", "D", "ArrowRight"], (e) => {
+  e.preventDefault();
   ballPosition.value[0] += ballSpeed.value;
 });
 
-onKeyStroke(["w", "W"], (e) => {
+onKeyStroke(["w", "W", "ArrowUp"], (e) => {
+  e.preventDefault();
   ballPosition.value[1] -= ballSpeed.value;
 });
 
-onKeyStroke(["s", "S"], (e) => {
+onKeyStroke(["s", "S", "ArrowDown"], (e) => {
+  e.preventDefault();
   ballPosition.value[1] += ballSpeed.value;
 });
 </script>

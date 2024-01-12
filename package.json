@@ -36,6 +36,7 @@
     "@strudel.cycles/xen": "^0.9.0",
     "@strudel/codemirror": "^0.9.0",
     "@strudel/hydra": "^0.9.0",
+    "@strudel/web": "^0.9.0",
     "@supabase/supabase-js": "latest",
     "@unocss/reset": "latest",
     "@unocss/runtime": "^0.58.2",

@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import ReactivityTransform from "@vue-macros/reactivity-transform/vite";
+import { transformerDirectives } from "unocss";
 
 export default defineNuxtConfig({
   devtools: { enabled: false },
@@ -64,6 +65,7 @@ export default defineNuxtConfig({
       { longTransition: "transition-all duration-500 ease-in" },
       { shortTransition: "transition-all duration-50 ease-in" },
     ],
+    // transformers: [transformerDirectives()],
   },
   supabase: {
     redirect: false,

@@ -33,9 +33,9 @@
             id="range"
             type="range"
             v-model="range"
-            step=".01"
-            min="0"
-            max="1"
+            step="1"
+            min="1"
+            max="64"
           />
           <span>{{ range }}</span>
         </div>
@@ -63,23 +63,16 @@ watch(AltEnter, (v) => {
   if (v) play();
 });
 
-const range = ref(0.5);
-const strudelCode = ref(`
-
-//always leave this, init of range slider ref, ff to add more
+const range = ref(4);
+const strudelCode = ref(
+  `//always leave this, init of range slider ref, ff to add more
 let ref = (getter) => pure(1).withValue(()=>reify(getter())).innerJoin();
 
-let panner = ref(()=> window.panner)
+let test = ref(()=> window.kack)
 
 //strudel stuff down here
-note("<g1>")
-.add(note("0,.1"))
-.s("sawtooth")
-.cpm(30)
-.speed(.5)
-.pan(panner)
-
-`);
+s("bd sd").stack(s("hh").ply(test))`
+);
 const play = () => {
   console.log(strudelCode.value);
   evaluate(strudelCode.value);
@@ -116,7 +109,7 @@ watchEffect(() => {
   ballXCss.value = `${ballPosition.value[0] - ballSize.value / 2}px`;
   ballYCss.value = `${ballPosition.value[1] - ballSize.value / 2}px`;
 
-  window.panner = range.value;
+  window.kack = range.value;
 });
 
 let frameCount = 0;

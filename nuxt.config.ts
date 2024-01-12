@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       },
       {
         smallerLine:
-          "bg-white w-80% h-5px transition-all duration-200 transform-gpu m-y-5 m-x-3",
+          "bg-white w-80% h-5px transition-all duration-200 transform-gpu m-y-1 m-x-3",
       },
       {
         wrapper: "w-screen h-screen overflow-hidden bg-black text-white",

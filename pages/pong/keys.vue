@@ -47,7 +47,7 @@
 <script setup>
 import { initStrudel } from "@strudel/web";
 initStrudel({
-  prebake: () => samples("http://localhost:3000/samplemapping.json"),
+  prebake: () => samples("github:tidalcycles/Dirt-Samples/master"),
 });
 
 const keys = useMagicKeys();

@@ -78,23 +78,6 @@ initStrudel({
   prebake: () => samples("http://localhost:3000/samplemapping.json"),
 });
 
-const { isSupported, channel, post, close, error, isClosed, data } =
-  useBroadcastChannel({
-    name: "channel1",
-  });
-
-watch(data, (v) => {
-  console.log(v);
-});
-
-watch(error, (v) => {
-  console.log(v);
-});
-
-watch(isClosed, (v) => {
-  console.log(v);
-});
-
 const keys = useMagicKeys();
 const Croco = keys["≥"];
 const AltDot = keys["Alt+."];
@@ -139,12 +122,12 @@ s("hh")
 
 `);
 const play = () => {
+  console.log(strudelCode.value);
   evaluate(strudelCode.value);
-  post("play");
 };
 
 const stop = () => {
-  post("pause");
+  console.log("pause");
   hush();
 };
 

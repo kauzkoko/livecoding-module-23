@@ -94,4 +94,12 @@ export default defineNuxtConfig({
     },
     plugins: [ReactivityTransform()],
   },
+  // nitro: {
+  //   devProxy: {
+  //     "/strudelcc": {
+  //       target: "https://strudel.cc/",
+  //       changeOrigin: false,
+  //     },
+  //   },
+  // },
 });

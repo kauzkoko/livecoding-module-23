@@ -23,4 +23,7 @@ logs
 .env.*
 !.env.example
 
+public/Dirt-Samples/
+/public/Dirt-Samples/
+public/Dirt-Samples/*
 public/Dirt-Samples

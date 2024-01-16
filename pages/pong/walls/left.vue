@@ -1,12 +1,15 @@
 <template>
   <div class="wrapper" @click="trigger('left')">
     <div
-      class="overflow-hidden absolute bg-white w-screen h-screen top-0 left-0 transform-gpu translate-y-$top transition-all duration-300 text-black text-80vh flexCenter"
+      class="overflow-hidden absolute bg-green w-screen h-screen top-0 left-0 transform-gpu translate-y-$top transition-all duration-300 text-black text-80vh flexCenter"
     >
       <div class="grid grid-cols-15">
         <div
           v-for="n in 64"
-          :style="{ backgroundColor: n % 2 === 0 ? 'black' : 'white' }"
+          :style="{
+            backgroundColor:
+              n % 3 === 0 ? 'green' : n % 2 === 0 ? 'black' : 'white',
+          }"
           class="w-3rem h-50vh"
         ></div>
       </div>

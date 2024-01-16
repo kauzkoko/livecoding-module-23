@@ -19,12 +19,12 @@
       <div
         :style="{ opacity: playground.leftWall ? '100%' : '0%' }"
         @click="toggleWall('left')"
-        class="absolute bg-yellow w-50px h-100% left-0 top-0 ml--50px"
+        class="absolute bg-green w-50px h-100% left-0 top-0 ml--50px"
       ></div>
       <div
         :style="{ opacity: playground.rightWall ? '100%' : '0%' }"
         @click="toggleWall('right')"
-        class="absolute bg-yellow w-50px h-100% right-0 top-0 mr--50px"
+        class="absolute bg-blue w-50px h-100% right-0 top-0 mr--50px"
       ></div>
       <div
         :style="{ opacity: playground.topWall ? '100%' : '0%' }"
@@ -34,16 +34,16 @@
       <div
         :style="{ opacity: playground.bottomWall ? '100%' : '0%' }"
         @click="toggleWall('bottom')"
-        class="absolute bg-yellow w-100% h-50px left-0 bottom-0 mb--50px"
+        class="absolute bg-red w-100% h-50px left-0 bottom-0 mb--50px"
       ></div>
-      <div
+      <!-- <div
         class="absolute w-full h-full left-0 top-0 grid grid-cols-2 text-black justify-between content-between place-content-between"
       >
         <div>top left</div>
         <div class="justify-self-end">top right</div>
         <div>bottom left</div>
         <div class="justify-self-end">bottom right</div>
-      </div>
+      </div> -->
       <div
         class="difference absolute aspect-1 bg-black w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY"
       ></div>

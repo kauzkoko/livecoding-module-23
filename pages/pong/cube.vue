@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper flexCenter">
-    <div class="fixed left-0 top-0 bg-yellow text-black">
+    <div class="console fixed left-0 top-0 bg-yellow text-black">
+      <div><button @click="post('crow')">send cp</button></div>
       <div class="grid grid-cols grid-2 gap-x-2">
         <div>ball.xSpeed</div>
         <div>
@@ -16,6 +17,26 @@
     </div>
     <div class="w-$playgroundX aspect-1 bg-white relative">
       <div
+        :style="{ opacity: playground.leftWall ? '100%' : '0%' }"
+        @click="toggleWall('left')"
+        class="absolute bg-yellow w-50px h-100% left-0 top-0 ml--50px"
+      ></div>
+      <div
+        :style="{ opacity: playground.rightWall ? '100%' : '0%' }"
+        @click="toggleWall('right')"
+        class="absolute bg-yellow w-50px h-100% right-0 top-0 mr--50px"
+      ></div>
+      <div
+        :style="{ opacity: playground.topWall ? '100%' : '0%' }"
+        @click="toggleWall('top')"
+        class="absolute bg-yellow w-100% h-50px left-0 top-0 mt--50px"
+      ></div>
+      <div
+        :style="{ opacity: playground.bottomWall ? '100%' : '0%' }"
+        @click="toggleWall('bottom')"
+        class="absolute bg-yellow w-100% h-50px left-0 bottom-0 mb--50px"
+      ></div>
+      <div
         class="absolute w-full h-full left-0 top-0 grid grid-cols-2 text-black justify-between content-between place-content-between"
       >
         <div>top left</div>
@@ -24,7 +45,7 @@
         <div class="justify-self-end">bottom right</div>
       </div>
       <div
-        class="absolute aspect-1 bg-black w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY"
+        class="difference absolute aspect-1 bg-black w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY"
       ></div>
     </div>
   </div>
@@ -32,15 +53,22 @@
 
 <script setup>
 const { data, post } = useBroadcastChannel({ name: "strudelpong" });
-const playground = reactive({ width: 300, height: 300 });
+const playground = reactive({
+  width: 300,
+  height: 300,
+  leftWall: true,
+  topWall: true,
+  rightWall: true,
+  bottomWall: true,
+});
 const playgroundX = css("playgroundX", playground.width + "px");
 const ball = reactive({
   x: playground.width / 2,
   y: playground.height / 2,
-  xSpeed: Math.floor(Math.random() * 3) + 1,
-  ySpeed: Math.floor(Math.random() * 3) + 1,
-  xDirection: 1,
-  yDirection: 1,
+  xSpeed: Math.random() * 3 + 1,
+  ySpeed: Math.random() * 3 + 1,
+  xDirection: Math.round(Math.random()) ? 1 : -1,
+  yDirection: Math.round(Math.random()) ? 1 : -1,
   r: 10,
 });
 
@@ -57,24 +85,35 @@ watch(data, () => {
 });
 
 setInterval(() => {
-  post("test");
+  post("wind");
 }, 1000);
+
+const toggleWall = (direction) => {
+  if (direction === "left") playground.leftWall = !playground.leftWall;
+  if (direction === "top") playground.topWall = !playground.topWall;
+  if (direction === "right") playground.rightWall = !playground.rightWall;
+  if (direction === "bottom") playground.bottomWall = !playground.bottomWall;
+};
 
 const { pause, resume } = useRafFn(() => {
   //move the ball every frame and bounce it off the walls
   ball.x += ball.xSpeed * ball.xDirection;
   ball.y += ball.ySpeed * ball.yDirection;
-  if (ball.x + ball.r >= playground.width) {
+  if (ball.x + ball.r >= playground.width && playground.rightWall) {
     ball.xDirection = -1;
+    post("space");
   }
-  if (ball.x - ball.r <= 0) {
+  if (ball.x - ball.r <= 0 && playground.leftWall) {
     ball.xDirection = 1;
+    post("cp");
   }
-  if (ball.y + ball.r >= playground.height) {
+  if (ball.y + ball.r >= playground.height && playground.bottomWall) {
     ball.yDirection = -1;
+    post("oh");
   }
-  if (ball.y - ball.r <= 0) {
+  if (ball.y - ball.r <= 0 && playground.topWall) {
     ball.yDirection = 1;
+    post("crow");
   }
 });
 

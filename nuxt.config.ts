@@ -102,4 +102,9 @@ export default defineNuxtConfig({
   //     },
   //   },
   // },
+  routeRules: {
+    "/stuff/**": {
+      proxy: "http://localhost:3009/**",
+    },
+  },
 });

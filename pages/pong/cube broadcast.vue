@@ -80,8 +80,17 @@ watchEffect(() => {
   ballY.value = `${ball.y - ball.r}px`;
 });
 
-watch(data, () => {
-  console.log(data.value);
+watch(data, (v) => {
+  console.log(v);
+  switch (v) {
+    case "leftWallOn":
+      playground.leftWall = true;
+      break;
+    case "leftWallOff":
+      playground.leftWall = false;
+      break;
+    // add rest of cases
+  }
 });
 
 setInterval(() => {

@@ -4,6 +4,7 @@ export const useOSC = () => {
   const osc = ref();
   const send = ref();
   const on = ref();
+  const bang = ref();
 
   onMounted(() => {
     osc.value = new OSC();
@@ -18,10 +19,15 @@ export const useOSC = () => {
     });
   };
 
+  bang.value = (address) => {
+    let message = new OSC.Message(address);
+    osc.value.send(message);
+  };
+
   send.value = (address, content) => {
     let message = new OSC.Message(address, content);
     osc.value.send(message);
   };
 
-  return { osc, on, send, Message: OSC.Message };
+  return { osc, on, send, Message: OSC.Message, bang };
 };

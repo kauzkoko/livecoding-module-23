@@ -4,8 +4,8 @@
     <Script src="/strudelrepltest.js"></Script>
     <!-- <strudel-editor></strudel-editor> -->
     <strudel-editor class="bg-yellow!">
-      <!-- let ref = (getter) =>
-  pure(1)
+      <!-- 
+          pure(1)
     .withValue(() => reify(getter()))
     .innerJoin();
 
@@ -15,7 +15,8 @@ console.log(test)
 
 stack(
   s(test).ply(16).gain(1).cpm(120)
-) -->
+  )
+       -->
     </strudel-editor>
   </ClientOnly>
 </template>

@@ -1,37 +1,73 @@
 <template>
   <div class="wrapper flexCenter">
-    <div class="console fixed left-0 top-0 bg-yellow text-black">
-      <div class="grid grid-cols-2 grid gap-x-1">
-        <div>start / restart game in 1 sec</div>
-        <div><button @click="restartGame()">start</button></div>
-      </div>
-      <div class="grid grid-cols-2 grid gap-x-1">
-        <div>end / stop game</div>
-        <div><button @click="endGame()">stop</button></div>
-      </div>
-      <div class="grid grid-cols-2 grid gap-x-1">
-        <div>pause game</div>
-        <div><button @click="pauseGame()">pause</button></div>
-      </div>
-      <div class="grid grid-cols-2 grid gap-x-1">
-        <div>resume game</div>
-        <div><button @click="resumeGame()">resume</button></div>
-      </div>
-      <div class="grid grid-cols-2 gap-x-1">
-        <div>ball.xSpeed</div>
-        <div>
-          <input type="range" v-model="ball.xSpeed" step="1" min="1" max="20" />
+    <div class="fixed left-0 top-0">
+      <div class="console bg-red text-black p-2">
+        <div class="grid grid-cols-2 grid gap-x-1">
+          <div>start game</div>
+          <div class="flex justify-end">
+            <button @click="restartGame()">start</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 grid gap-x-1">
+          <div>end game</div>
+          <div class="flex justify-end">
+            <button @click="endGame()">stop</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 grid gap-x-1">
+          <div>pause game</div>
+          <div class="flex justify-end">
+            <button @click="pauseGame()">pause</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 grid gap-x-1">
+          <div>resume game</div>
+          <div class="flex justify-end">
+            <button @click="resumeGame()">resume</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-1">
+          <div>x speed</div>
+          <div class="flex justify-end">
+            <input
+              type="range"
+              v-model="ball.xSpeed"
+              step=".2"
+              min="1"
+              max="6"
+            />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-1">
+          <div>y speed</div>
+          <div class="flex justify-end">
+            <input
+              type="range"
+              v-model="ball.ySpeed"
+              step=".2"
+              min="1"
+              max="6"
+            />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-1">
+          <div>gameStatus</div>
+          <div class="text-end">{{ gameStatus }}</div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-1 mt-1">
+          <div>score</div>
+          <div class="text-end">{{ score }}</div>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-x-1">
-        <div>ball.ySpeed</div>
-        <div>
-          <input type="range" v-model="ball.ySpeed" step="1" min="1" max="20" />
+      <div class="bg-yellow text-black p-2">
+        <div>highscores</div>
+        <div
+          class="flex justify-between mt-1"
+          v-for="entry in sortedHighscores"
+        >
+          <div>{{ entry.name }}</div>
+          <div>{{ entry.score }}</div>
         </div>
-      </div>
-      <div class="grid grid-cols-2 gap-x-1">
-        <div>gameStatus</div>
-        <div>{{ gameStatus }}</div>
       </div>
     </div>
     <div class="w-$playgroundX aspect-1 bg-white relative">
@@ -76,9 +112,37 @@
         ></div>
       </div>
       <div
-        class="mix-blend-difference absolute aspect-1 bg-white w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY transition-transform duration-20"
+        class="mix-blend-difference absolute aspect-1 bg-yellow w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY transition-transform duration-20"
         :style="{ opacity: fadeOut ? '0%' : '100%', transition: 'opacity 3s' }"
       ></div>
+    </div>
+    <div
+      @click="
+        gameStatus === 'ended'
+          ? restartGame()
+          : gameStatus === 'paused'
+          ? resumeGame()
+          : restartGame()
+      "
+      class="fixed left-50vw top-50vh transform-gpu translate-x--50% translate-y--50% text-40px bg-red mt-2 p-3 transition-all duration-300"
+      :style="{
+        opacity:
+          gameStatus === 'ended' ||
+          gameStatus === 'paused' ||
+          gameStatus === 'ready'
+            ? '100%'
+            : '0%',
+      }"
+    >
+      {{
+        gameStatus === "ended"
+          ? "game over – restart?"
+          : gameStatus === "paused"
+          ? "paused – continue?"
+          : gameStatus === "ready"
+          ? "ready – start?"
+          : ""
+      }}
     </div>
   </div>
 </template>
@@ -92,9 +156,10 @@ const greenBars = ref(31);
 const yellowBars = ref(45);
 
 // playground
+let size = 400;
 const playground = reactive({
-  width: 300,
-  height: 300,
+  width: size,
+  height: size,
   leftWall: false,
   topWall: false,
   rightWall: false,
@@ -113,7 +178,6 @@ let startXDirection =
   random > 0.5
     ? map(random, 0.5, 1, 0.2, 0.5)
     : map(random, 0, 0.5, -0.2, -0.5);
-console.log(startXDirection);
 let startYDirection = 1;
 let startBallValues = {
   x: startX,
@@ -122,7 +186,7 @@ let startBallValues = {
   ySpeed: startYSpeed,
   xDirection: startXDirection,
   yDirection: startYDirection,
-  r: 10,
+  r: 20,
 };
 const ball = reactive(startBallValues);
 const ballX = css("ballX", ball.x - ball.r + "px");
@@ -149,6 +213,45 @@ const toggleWall = (direction) => {
   }
 };
 
+let names = [
+  "weirdo",
+  "stroll",
+  "senfbraten",
+  "ekmek",
+  "playboy2002",
+  "strudlerqueen",
+  "weirdass",
+  "lamm",
+  "anja",
+  "tsch fruh",
+  "sonne",
+  "mama",
+  "hotel m",
+  "swizzEU",
+  "schnitzel",
+  "chez monique",
+  "rasa w",
+  "seifenwasch 2",
+  "seifenwasch",
+];
+const highscores = ref([]);
+const sortedHighscores = useSorted(highscores, (a, b) => b.score - a.score);
+const getHighscores = async () => {
+  let { data, error } = await supabase.from("starcube_highscores").select("*");
+  highscores.value = data;
+  console.log(data);
+};
+
+const setHighscore = async () => {
+  const { data, error } = await supabase.from("starcube_highscores").insert([
+    {
+      name: names[Math.floor(Math.random() * names.length)],
+      score: score.value,
+    },
+  ]);
+  getHighscores();
+};
+
 watchEffect(() => {
   ballX.value = `${ball.x - ball.r}px`;
   ballY.value = `${ball.y - ball.r}px`;
@@ -156,12 +259,15 @@ watchEffect(() => {
 
 // game
 let endDelay = 3000;
+const score = ref(0);
+const lastGameStatus = ref("ready");
 const gameStatus = ref("ready");
 const fadeOut = ref(true);
 let restartGame, pauseGame, endGame, resumeGame;
 let channel;
 onMounted(() => {
   // supabase walls
+  getHighscores();
   channel = supabase.channel("strudelpong");
   channel
     .on("broadcast", { event: "walls" }, (event) => {
@@ -181,8 +287,29 @@ onMounted(() => {
         default:
           return;
       }
-
-      console.log(event);
+    })
+    .on("broadcast", { event: "phoneControls" }, (event) => {
+      console.log(event.payload.action);
+      switch (event.payload.action) {
+        case "restart":
+          console.log(event.payload.action);
+          restartGame();
+          break;
+        case "end":
+          endGame();
+          console.log(event.payload.action);
+          break;
+        case "resume":
+          resumeGame();
+          console.log(event.payload.action);
+          break;
+        case "pause":
+          pauseGame();
+          console.log(event.payload.action);
+          break;
+        default:
+          return;
+      }
     })
     .subscribe();
 
@@ -197,6 +324,7 @@ onMounted(() => {
         gameStatus.value === "inCube"
       ) {
         ball.xDirection = -1;
+        score.value++;
         bang.value("bounce");
       } else if (
         (ball.x + ball.r > playground.width || ball.x + ball.r < 0) &&
@@ -210,6 +338,7 @@ onMounted(() => {
         gameStatus.value === "inCube"
       ) {
         ball.xDirection = 1;
+        score.value++;
         bang.value("bounce");
       } else if (
         (ball.x - ball.r < 0 || ball.x - ball.r > playground.width) &&
@@ -223,6 +352,7 @@ onMounted(() => {
         gameStatus.value === "inCube"
       ) {
         ball.yDirection = -1;
+        score.value++;
         bang.value("bounce");
       } else if (
         (ball.y + ball.r > playground.height || ball.y + ball.r < 0) &&
@@ -236,6 +366,7 @@ onMounted(() => {
         gameStatus.value === "inCube"
       ) {
         ball.yDirection = 1;
+        score.value++;
         bang.value("bounce");
       } else if (
         (ball.y - ball.r < 0 || ball.y - ball.r > playground.height) &&
@@ -252,9 +383,23 @@ onMounted(() => {
 
   // game state controls
   pause();
-  resumeGame = resume;
+  resumeGame = () => {
+    resume();
+    channel.send({
+      type: "broadcast",
+      event: "gameEvents",
+      payload: { action: "resume" },
+    });
+    gameStatus.value = lastGameStatus.value;
+  };
   pauseGame = () => {
     pause();
+    channel.send({
+      type: "broadcast",
+      event: "gameEvents",
+      payload: { action: "pause" },
+    });
+    lastGameStatus.value = gameStatus.value;
     gameStatus.value = "paused";
   };
   endGame = () => {
@@ -279,9 +424,14 @@ onMounted(() => {
       playground.rightWall = false;
       playground.bottomWall = false;
       gameStatus.value = "ended";
-      console.log("game ended");
+      setHighscore();
+      channel.send({
+        type: "broadcast",
+        event: "gameEvents",
+        payload: { action: "end" },
+      });
+      bang.value("endGame");
     }, endDelay);
-    bang.value("endGame");
   };
   restartGame = () => {
     fadeOut.value = false;
@@ -301,6 +451,11 @@ onMounted(() => {
     ball.ySpeed = startYSpeed;
     setTimeout(() => resume(), 0);
     gameStatus.value = "started";
+    channel.send({
+      type: "broadcast",
+      event: "gameEvents",
+      payload: { action: "restart" },
+    });
     bang.value("restartGame");
   };
 
@@ -320,5 +475,13 @@ onMounted(() => {
     let minDistance = Math.min(...distances);
     sendOSC.value("minDistance", minDistance);
   }, 50);
+
+  watchEffect(() => {
+    channel.send({
+      type: "broadcast",
+      event: "gameEvents",
+      payload: { action: "score", score: score.value },
+    });
+  });
 });
 </script>

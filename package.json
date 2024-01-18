@@ -13,12 +13,13 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/supabase": "latest",
+    "@tresjs/nuxt": "latest",
     "@unocss/nuxt": "latest",
     "@vue-macros/nuxt": "^1.9.18",
     "@vue-macros/reactivity-transform": "^0.4.1",
     "@vueuse/core": "latest",
     "@vueuse/nuxt": "latest",
-    "nuxt": "latest",
+    "nuxt": "^3.9.3",
     "sass": "latest",
     "vite": "^5.0.10"
   },
@@ -38,6 +39,8 @@
     "@strudel/hydra": "^0.9.0",
     "@strudel/web": "^0.9.0",
     "@supabase/supabase-js": "latest",
+    "@tresjs/cientos": "^3.7.0",
+    "@tresjs/post-processing": "^0.7.0",
     "@unocss/reset": "latest",
     "@unocss/runtime": "^0.58.2",
     "@vueuse/integrations": "^10.7.0",
@@ -49,6 +52,8 @@
     "osc-js": "latest",
     "qr-scanner": "^1.4.2",
     "qrcode": "^1.5.3",
+    "superdough": "^0.10.0",
+    "three": "^0.160.0",
     "unocss": "latest",
     "ws": "^8.15.1"
   }

@@ -3,7 +3,7 @@ import ReactivityTransform from "@vue-macros/reactivity-transform/vite";
 import { transformerDirectives } from "unocss";
 
 export default defineNuxtConfig({
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   ssr: false,
   unocss: {
     shortcuts: [
@@ -75,6 +75,7 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@nuxtjs/supabase",
     "@vue-macros/nuxt",
+    "@tresjs/nuxt",
   ],
   app: {
     head: {
@@ -94,6 +95,10 @@ export default defineNuxtConfig({
     },
     plugins: [ReactivityTransform()],
   },
+  tres: {
+    devtools: true,
+    glsl: true,
+  },
   // nitro: {
   //   devProxy: {
   //     "/strudelcc": {
@@ -102,9 +107,9 @@ export default defineNuxtConfig({
   //     },
   //   },
   // },
-  routeRules: {
-    "/stuff/**": {
-      proxy: "http://localhost:3009/**",
-    },
-  },
+  // routeRules: {
+  //   "/stuff/**": {
+  //     proxy: "http://localhost:3009/**",
+  //   },
+  // },
 });

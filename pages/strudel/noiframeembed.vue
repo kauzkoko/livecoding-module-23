@@ -23,6 +23,7 @@ stack(
 
 <script setup>
 const { data, post } = useBroadcastChannel({ name: "strudelpong" });
+window.stuff = ref(10);
 watch(data, () => {
   console.log(data.value);
   window.test = data.value;

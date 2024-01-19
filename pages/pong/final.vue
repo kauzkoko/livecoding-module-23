@@ -172,7 +172,7 @@ const playground = reactive({
 const playgroundX = css("playgroundX", playground.width + "px");
 
 // ball
-let speed = 1;
+let speed = 0.7;
 let startX = playground.width / 2;
 let startY = -playground.height;
 let startXSpeed = 1.9 * speed;
@@ -373,9 +373,7 @@ onMounted(() => {
         default:
           return;
       }
-    })
-    .subscribe();
-
+    });
   // ball movement / collision
   const { pause, resume } = useRafFn(() => {
     ball.x += ball.xSpeed * ball.xDirection;

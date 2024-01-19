@@ -3,7 +3,7 @@ import ReactivityTransform from "@vue-macros/reactivity-transform/vite";
 import { transformerDirectives } from "unocss";
 
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   ssr: false,
   unocss: {
     shortcuts: [

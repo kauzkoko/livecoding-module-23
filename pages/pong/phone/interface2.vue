@@ -1,10 +1,66 @@
 <template>
   <div class="wrapper flexCenter">
+    <div
+      v-show="wallLeft"
+      class="absolute grid grid-cols-15 left-0 top-0 h-full w-10vw"
+      v-for="n in show.number"
+    >
+      <div
+        v-for="n in 64"
+        :style="{
+          backgroundColor:
+            n % 3 === 0 ? 'green' : n % 2 === 0 ? 'black' : 'white',
+        }"
+        class="w-3rem h-50vh"
+      ></div>
+    </div>
+    <div
+      v-show="wallRight"
+      class="absolute grid grid-cols-15 right-0 top-0 h-full w-25vw"
+      v-for="n in show.number"
+    >
+      <div
+        v-for="n in 64"
+        :style="{
+          backgroundColor:
+            n % 3 === 0 ? 'blue' : n % 2 === 0 ? 'black' : 'white',
+        }"
+        class="w-3rem h-50vh"
+      ></div>
+    </div>
+    <div
+      v-show="wallTop"
+      class="absolute grid grid-cols-15 left-0 top-0 h-10vw w-screen overflow-hidden"
+      v-for="n in show.number"
+    >
+      <div
+        v-for="n in 64"
+        :style="{
+          backgroundColor:
+            n % 3 === 0 ? 'yellow' : n % 2 === 0 ? 'black' : 'white',
+        }"
+        class="h-3rem w-50vh"
+      ></div>
+    </div>
+    <div
+      class="absolute grid grid-cols-15 left-0 bottom-0 h-10vw w-screen overflow-hidden"
+      v-show="wallBottom"
+      v-for="n in show.number"
+    >
+      <div
+        v-for="n in 64"
+        :style="{
+          backgroundColor:
+            n % 3 === 0 ? 'red' : n % 2 === 0 ? 'black' : 'white',
+        }"
+        class="h-3rem w-50vh"
+      ></div>
+    </div>
     <div>
       <div class="fixed left-0 top-0 wrapper flexCenter bg-transparent">
         <div
           @click="gameStatus === 'paused' ? send('resume') : send('pause')"
-          class="circle bg-yellow w-200px flexCenter text-black text-30px text-bold user-select-none"
+          class="circle bg-yellow w-150px flexCenter text-black text-30px text-bold user-select-none"
         >
           {{ score }}
         </div>
@@ -38,16 +94,6 @@
         }}
       </div>
     </div>
-    <div class="grid grid-cols-15" v-for="n in show.number">
-      <div
-        v-for="n in 64"
-        :style="{
-          backgroundColor:
-            n % 3 === 0 ? show.color : n % 2 === 0 ? 'black' : 'white',
-        }"
-        class="w-3rem h-50vh"
-      ></div>
-    </div>
   </div>
 </template>
 
@@ -76,6 +122,13 @@ const send = (action) => {
   });
 };
 
+const wallLeft = ref(false);
+const wallRight = ref(false);
+const wallTop = ref(false);
+const wallBottom = ref(false);
+watch([wallLeft, wallRight, wallTop, wallBottom], (v) => {
+  console.log(v);
+});
 onMounted(() => {
   channel = supabase.channel("strudelpong");
   channel
@@ -106,6 +159,12 @@ onMounted(() => {
         default:
           return;
       }
+    })
+    .on("broadcast", { event: "walls" }, (event) => {
+      wallLeft.value = event.payload.wallLeft;
+      wallRight.value = event.payload.wallRight;
+      wallTop.value = event.payload.wallTop;
+      wallBottom.value = event.payload.wallBottom;
     })
     .subscribe();
 });

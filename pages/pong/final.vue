@@ -55,11 +55,15 @@
           <div class="text-end">{{ gameStatus }}</div>
         </div>
         <div class="grid grid-cols-2 gap-x-1 mt-1">
+          <div>name</div>
+          <div class="text-end"><input type="text" v-model="customName" /></div>
+        </div>
+        <div class="grid grid-cols-2 gap-x-1 mt-1">
           <div>score</div>
           <div class="text-end">{{ score }}</div>
         </div>
       </div>
-      <div class="bg-yellow text-black p-2">
+      <div class="bg-yellow text-black p-2 overflow-y-scroll">
         <div>highscores</div>
         <div
           class="flex justify-between mt-1"
@@ -193,22 +197,64 @@ const ballX = css("ballX", ball.x - ball.r + "px");
 const ballY = css("ballY", ball.y - ball.r + "px");
 const ballWidth = css("ballWidth", ball.r * 2 + "px");
 
-// walls
+const concurrentWalls = ref(2);
+const walls = ref([]);
+watch(playground, () => {
+  console.log(walls.value);
+  if (walls.value.length > concurrentWalls.value) {
+    let removeWall = walls.value[0];
+    walls.value = walls.value.slice(-concurrentWalls.value);
+    playground[removeWall] = false;
+  }
+});
+
 const toggleWall = (direction) => {
   if (direction === "left") {
     playground.leftWall = !playground.leftWall;
+    if (
+      walls.value[walls.value.length - 1] !== "leftWall" &&
+      playground.leftWall
+    ) {
+      walls.value.push("leftWall");
+    } else {
+      walls.value = walls.value.filter((wall) => wall !== "leftWall");
+    }
     sendOSC.value("toggleLeftWall", 1);
   }
   if (direction === "top") {
     playground.topWall = !playground.topWall;
+    if (
+      walls.value[walls.value.length - 1] !== "topWall" &&
+      playground.topWall
+    ) {
+      walls.value.push("topWall");
+    } else {
+      walls.value = walls.value.filter((wall) => wall !== "topWall");
+    }
     sendOSC.value("toggleTopWall", 1);
   }
   if (direction === "right") {
     playground.rightWall = !playground.rightWall;
+    if (
+      walls.value[walls.value.length - 1] !== "rightWall" &&
+      playground.rightWall
+    ) {
+      walls.value.push("rightWall");
+    } else {
+      walls.value = walls.value.filter((wall) => wall !== "rightWall");
+    }
     sendOSC.value("toggleRightWall", 1);
   }
   if (direction === "bottom") {
     playground.bottomWall = !playground.bottomWall;
+    if (
+      walls.value[walls.value.length - 1] !== "bottomWall" &&
+      playground.bottomWall
+    ) {
+      walls.value.push("bottomWall");
+    } else {
+      walls.value = walls.value.filter((wall) => wall !== "bottomWall");
+    }
     sendOSC.value("toggleBottomWall", 1);
   }
 };
@@ -234,6 +280,7 @@ let names = [
   "seifenwasch 2",
   "seifenwasch",
 ];
+const customName = ref("");
 const highscores = ref([]);
 const sortedHighscores = useSorted(highscores, (a, b) => b.score - a.score);
 const getHighscores = async () => {
@@ -243,9 +290,13 @@ const getHighscores = async () => {
 };
 
 const setHighscore = async () => {
+  let scoreName =
+    customName.value === ""
+      ? names[Math.floor(Math.random() * names.length)]
+      : customName.value;
   const { data, error } = await supabase.from("starcube_highscores").insert([
     {
-      name: names[Math.floor(Math.random() * names.length)],
+      name: scoreName,
       score: score.value,
     },
   ]);
@@ -425,6 +476,7 @@ onMounted(() => {
       playground.bottomWall = false;
       gameStatus.value = "ended";
       setHighscore();
+      score.value = 0;
       channel.send({
         type: "broadcast",
         event: "gameEvents",
@@ -434,6 +486,7 @@ onMounted(() => {
     }, endDelay);
   };
   restartGame = () => {
+    score.value = 0;
     fadeOut.value = false;
     ball.x = startX;
     ball.y = startY;
@@ -473,7 +526,7 @@ onMounted(() => {
       ball.y - ball.r,
     ];
     let minDistance = Math.min(...distances);
-    sendOSC.value("minDistance", minDistance);
+    sendOSC.value("minDistance", map(minDistance, 0, size, 0, 1));
   }, 50);
 
   watchEffect(() => {

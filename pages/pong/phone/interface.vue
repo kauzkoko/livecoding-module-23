@@ -1,39 +1,42 @@
 <template>
   <div class="wrapper flexCenter">
-    <div class="fixed left-0 top-0 wrapper flexCenter bg-transparent">
-      <div
-        class="circle bg-yellow w-200px flexCenter text-black text-60px text-bold"
-      >
-        {{ score }}
+    <div>
+      <div class="fixed left-0 top-0 wrapper flexCenter bg-transparent">
+        <div
+          @click="gameStatus === 'paused' ? send('resume') : send('pause')"
+          class="circle bg-yellow w-200px flexCenter text-black text-60px text-bold user-select-none"
+        >
+          {{ score }}
+        </div>
       </div>
-    </div>
-    <div
-      @click="
-        gameStatus === 'ended'
-          ? send('restart')
-          : gameStatus === 'paused'
-          ? send('resume')
-          : send('restart')
-      "
-      class="fixed left-50vw top-50vh transform-gpu translate-x--50% translate-y--50% text-40px bg-red mt-2 p-3 transition-all duration-300 whitespace-nowrap"
-      :style="{
-        opacity:
-          gameStatus === 'ended' ||
-          gameStatus === 'paused' ||
-          gameStatus === 'ready'
-            ? '100%'
-            : '0%',
-      }"
-    >
-      {{
-        gameStatus === "ended"
-          ? "game over – restart?"
-          : gameStatus === "paused"
-          ? "paused – continue?"
-          : gameStatus === "ready"
-          ? "ready – start?"
-          : ""
-      }}
+      <div
+        @click="
+          gameStatus === 'ended'
+            ? send('restart')
+            : gameStatus === 'paused'
+            ? send('resume')
+            : send('restart')
+        "
+        class="fixed left-50vw top-50vh transform-gpu translate-x--50% translate-y--50% text-40px bg-red mt-2 p-3 transition-all duration-300 whitespace-nowrap"
+        :style="{
+          opacity:
+            gameStatus === 'ended' ||
+            gameStatus === 'paused' ||
+            gameStatus === 'ready'
+              ? '100%'
+              : '0%',
+        }"
+      >
+        {{
+          gameStatus === "ended"
+            ? "game over – restart?"
+            : gameStatus === "paused"
+            ? "paused – continue?"
+            : gameStatus === "ready"
+            ? "ready – start?"
+            : ""
+        }}
+      </div>
     </div>
     <div class="grid grid-cols-15" v-for="n in show.number">
       <div
@@ -85,10 +88,12 @@ onMounted(() => {
         case "end":
           console.log(event.payload.action);
           gameStatus.value = "ended";
+          score.value = 0;
           break;
         case "restart":
           console.log(event.payload.action);
           gameStatus.value = "started";
+          score.value = 0;
           break;
         case "pause":
           console.log(event.payload.action);

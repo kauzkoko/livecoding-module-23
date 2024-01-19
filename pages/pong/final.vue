@@ -197,6 +197,18 @@ const ballX = css("ballX", ball.x - ball.r + "px");
 const ballY = css("ballY", ball.y - ball.r + "px");
 const ballWidth = css("ballWidth", ball.r * 2 + "px");
 
+let sendWalls = () => {
+  channel.send({
+    type: "broadcast",
+    event: "walls",
+    payload: {
+      wallLeft: playground.leftWall,
+      wallRight: playground.rightWall,
+      wallTop: playground.topWall,
+      wallBottom: playground.bottomWall,
+    },
+  });
+};
 const concurrentWalls = ref(2);
 const walls = ref([]);
 watch(playground, () => {
@@ -206,8 +218,9 @@ watch(playground, () => {
     walls.value = walls.value.slice(-concurrentWalls.value);
     playground[removeWall] = false;
   }
+  console.log("should send");
+  sendWalls();
 });
-
 const toggleWall = (direction) => {
   if (direction === "left") {
     playground.leftWall = !playground.leftWall;
@@ -286,9 +299,7 @@ const sortedHighscores = useSorted(highscores, (a, b) => b.score - a.score);
 const getHighscores = async () => {
   let { data, error } = await supabase.from("starcube_highscores").select("*");
   highscores.value = data;
-  console.log(data);
 };
-
 const setHighscore = async () => {
   let scoreName =
     customName.value === ""
@@ -324,21 +335,22 @@ onMounted(() => {
     .on("broadcast", { event: "walls" }, (event) => {
       switch (event.payload.wall) {
         case "left":
-          playground.leftWall = event.payload.wallValue;
+          toggleWall("left");
           break;
         case "top":
-          playground.topWall = event.payload.wallValue;
+          toggleWall("top");
           break;
         case "right":
-          playground.rightWall = event.payload.wallValue;
+          toggleWall("right");
           break;
         case "bottom":
-          playground.bottomWall = event.payload.wallValue;
+          toggleWall("bottom");
           break;
         default:
           return;
       }
     })
+    // phone interface
     .on("broadcast", { event: "phoneControls" }, (event) => {
       console.log(event.payload.action);
       switch (event.payload.action) {
@@ -482,6 +494,7 @@ onMounted(() => {
         event: "gameEvents",
         payload: { action: "end" },
       });
+      sendWalls();
       bang.value("endGame");
     }, endDelay);
   };

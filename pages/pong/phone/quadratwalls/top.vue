@@ -22,17 +22,23 @@ const top = css("top", "60vh");
 const supabase = useSupabaseClient();
 let channel;
 
-onMounted(() => {
-  channel = supabase.channel("strudelpong");
-});
-
-const trigger = (wall) => {
-  top.value = top.value ? 0 : "60vh";
-  let wallValue = !top.value ?? false;
+const wall = ref(false);
+const trigger = (direction) => {
+  top.value = wall.value ? 0 : "60vh";
   channel.send({
     type: "broadcast",
     event: "walls",
-    payload: { wall, wallValue: wallValue },
+    payload: { wall: direction, wallValue: wall.value },
   });
 };
+
+onMounted(() => {
+  channel = supabase.channel("strudelpong");
+  channel
+    .on("broadcast", { event: "walls" }, (event) => {
+      wall.value = event.payload.wallTop;
+      top.value = wall.value ? 0 : "60vh";
+    })
+    .subscribe();
+});
 </script>

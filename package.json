@@ -11,10 +11,12 @@
     "serve": "./https-serve.sh"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.1.64",
     "@nuxt/devtools": "latest",
     "@nuxtjs/supabase": "latest",
     "@tresjs/nuxt": "latest",
     "@unocss/nuxt": "latest",
+    "@unocss/preset-icons": "^0.58.3",
     "@vue-macros/nuxt": "^1.9.18",
     "@vue-macros/reactivity-transform": "^0.4.1",
     "@vueuse/core": "latest",
@@ -40,6 +42,7 @@
     "@strudel/web": "^0.9.0",
     "@supabase/supabase-js": "latest",
     "@tresjs/cientos": "^3.7.0",
+    "@tresjs/core": "^3.6.1",
     "@tresjs/post-processing": "^0.7.0",
     "@unocss/reset": "latest",
     "@unocss/runtime": "^0.58.2",

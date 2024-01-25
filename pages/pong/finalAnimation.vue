@@ -1,78 +1,5 @@
 <template>
-  <div class="wrapper flexCenter">
-    <div class="fixed left-0 top-0">
-      <div class="console bg-red text-black p-2">
-        <div class="grid grid-cols-2 grid gap-x-1">
-          <div>start game</div>
-          <div class="flex justify-end">
-            <button @click="restartGame()">start</button>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 grid gap-x-1">
-          <div>end game</div>
-          <div class="flex justify-end">
-            <button @click="endGame()">stop</button>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 grid gap-x-1">
-          <div>pause game</div>
-          <div class="flex justify-end">
-            <button @click="pauseGame()">pause</button>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 grid gap-x-1">
-          <div>resume game</div>
-          <div class="flex justify-end">
-            <button @click="resumeGame()">resume</button>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-1">
-          <div>x speed</div>
-          <div class="flex justify-end">
-            <input
-              type="range"
-              v-model="ball.xSpeed"
-              step=".2"
-              min="1"
-              max="6"
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-1">
-          <div>y speed</div>
-          <div class="flex justify-end">
-            <input
-              type="range"
-              v-model="ball.ySpeed"
-              step=".2"
-              min="1"
-              max="6"
-            />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-1">
-          <div>gameStatus</div>
-          <div class="text-end">{{ gameStatus }}</div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-1 mt-1">
-          <div>name</div>
-          <div class="text-end"><input type="text" v-model="customName" /></div>
-        </div>
-        <div class="grid grid-cols-2 gap-x-1 mt-1">
-          <div>score</div>
-          <div class="text-end">{{ score }}</div>
-        </div>
-      </div>
-      <div class="bg-yellow text-black p-2 overflow-y-scroll">
-        <div>highscores</div>
-        <div v-for="(entry, index) in sortedHighscores">
-          <div v-show="index < 15" class="flex justify-between mt-1">
-            <div>{{ entry.name }}</div>
-            <div>{{ entry.score }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="wrapper flexCenter cursor-none font-sans">
     <div class="w-$playgroundX aspect-1 bg-white relative">
       <div
         :style="{ opacity: playground.leftWall ? '100%' : '0%' }"
@@ -157,6 +84,7 @@ const redBars = ref(35);
 const blueBars = ref(39);
 const greenBars = ref(31);
 const yellowBars = ref(45);
+setPageLayout("none");
 
 // playground
 let size = 400;
@@ -171,16 +99,17 @@ const playground = reactive({
 const playgroundX = css("playgroundX", playground.width + "px");
 
 // ball
-let speed = 0.7;
+let speed = 0.9;
 let startX = playground.width / 2;
-let startY = -playground.height;
+let startY = -playground.height - 70;
 let startXSpeed = 1.9 * speed;
 let startYSpeed = 2.4 * speed;
 let random = Math.random();
-let startXDirection =
-  random > 0.5
-    ? map(random, 0.5, 1, 0.2, 0.5)
-    : map(random, 0, 0.5, -0.2, -0.5);
+// let startXDirection =
+//   random > 0.5
+//     ? map(random, 0.5, 1, 0.2, 0.3)
+//     : map(random, 0, 0.5, -0.2, -0.3);
+let startXDirection = 0.2;
 let startYDirection = 1;
 let startBallValues = {
   x: startX,
@@ -323,7 +252,7 @@ let endDelay = 3000;
 const score = ref(0);
 const lastGameStatus = ref("ready");
 const gameStatus = ref("ready");
-const fadeOut = ref(true);
+const fadeOut = ref(false);
 let restartGame, pauseGame, endGame, resumeGame;
 let channel;
 onMounted(() => {
@@ -472,6 +401,7 @@ onMounted(() => {
         random > 0.5
           ? map(random, 0.5, 1, 0.2, 0.5)
           : map(random, 0, 0.5, -0.2, -0.5);
+      startXDirection = -0.3;
       let startYDirection = 1;
       ball.x = startX;
       ball.y = startY;
@@ -505,6 +435,7 @@ onMounted(() => {
       random > 0.5
         ? map(random, 0.5, 1, 0.2, 0.5)
         : map(random, 0, 0.5, -0.2, -0.5);
+    startXDirection = -0.3;
     let startYDirection = 1;
     ball.x = startX;
     ball.y = startY;
@@ -546,5 +477,33 @@ onMounted(() => {
       payload: { action: "score", score: score.value },
     });
   });
+});
+
+onKeyStroke(["a", "A"], (e) => {
+  toggleWall("left");
+});
+
+onKeyStroke(["d", "D"], (e) => {
+  toggleWall("right");
+});
+
+onKeyStroke(["w", "W"], (e) => {
+  toggleWall("top");
+});
+
+onKeyStroke(["s", "S"], (e) => {
+  toggleWall("bottom");
+});
+
+onKeyStroke(["l", "L"], (e) => {
+  restartGame();
+});
+
+onKeyStroke(["p", "P"], (e) => {
+  pauseGame();
+});
+
+onKeyStroke(["r", "R"], (e) => {
+  resumeGame();
 });
 </script>

@@ -71,14 +71,19 @@
           class="bg-white w-10px h-50px ml-20px self-start"
         ></div>
       </div>
-      <!-- <div
-        class="absolute w-full h-full left-0 top-0 grid grid-cols-2 text-black justify-between content-between place-content-between"
+      <div
+        class="absolute w-full h-full left-0 top-0 grid grid-cols-3 grid-rows-3 text-black justify-between content-between place-content-between"
       >
         <div>top left</div>
+        <div class="justify-self-center">top middle</div>
         <div class="justify-self-end">top right</div>
-        <div>bottom left</div>
-        <div class="justify-self-end">bottom right</div>
-      </div> -->
+        <div class="self-center justify-self-start">middle left</div>
+        <div class="justif-self-center self-center text-center"></div>
+        <div class="justify-self-end self-center">middle right</div>
+        <div class="self-end">bottom left</div>
+        <div class="self-end justify-self-center">bottom middle</div>
+        <div class="justify-self-end self-end">bottom right</div>
+      </div>
       <div
         class="mix-blend-difference absolute aspect-1 bg-white w-$ballWidth rounded-full transform-gpu translate-x-$ballX translate-y-$ballY transition-all duration-20"
       ></div>

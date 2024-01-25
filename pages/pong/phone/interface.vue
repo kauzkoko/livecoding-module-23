@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper flexCenter">
+  <div class="wrapper flexCenter font-sans">
     <div>
       <div class="fixed left-0 top-0 wrapper flexCenter bg-transparent">
         <div
@@ -54,6 +54,7 @@
 <script setup>
 const supabase = useSupabaseClient();
 let channel;
+setPageLayout("none");
 
 let colors = ["red", "blue", "green", "yellow"];
 const { state, next, prev } = useCycleList(colors);
@@ -108,5 +109,22 @@ onMounted(() => {
       }
     })
     .subscribe();
+});
+
+onKeyStroke(["e", "E"], (e) => {
+  gameStatus.value = "ended";
+});
+
+onKeyStroke(["r", "R"], (e) => {
+  score.value = 0;
+  gameStatus.value = "started";
+});
+
+onKeyStroke(["l", "L"], (e) => {
+  gameStatus.value = "started";
+});
+
+onKeyStroke(["s", "S"], (e) => {
+  score.value++;
 });
 </script>

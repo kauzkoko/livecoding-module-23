@@ -50,4 +50,8 @@ const trigger = (wall) => {
     payload: { wall, wallValue: wallValue },
   });
 };
+
+onKeyStroke([" ", " "], (e) => {
+  trigger("bottom");
+});
 </script>

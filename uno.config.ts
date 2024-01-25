@@ -1,19 +1,22 @@
 // uno.config.ts
 import { defineConfig, presetAttributify, presetUno } from "unocss";
-import { presetWebFonts, transformerDirectives } from "unocss";
+import { presetWebFonts, transformerDirectives, presetIcons } from "unocss";
 
 export default defineConfig({
   presets: [
-    presetAttributify({
-      /* preset options */
-    }),
+    presetAttributify({}),
     presetUno(),
-    // ...custom presets
+    presetIcons({}),
     presetWebFonts({
       provider: "bunny", // default provider
       fonts: {
-        // these will extend the default theme
         sans: "Jost",
+        helvetica: [
+          {
+            name: "Helvetica Neue",
+            provider: "none",
+          },
+        ],
       },
     }),
   ],

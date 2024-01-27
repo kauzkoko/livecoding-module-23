@@ -108,8 +108,8 @@ export default defineNuxtConfig({
   //   },
   // },
   // routeRules: {
-  //   "/stuff/**": {
-  //     proxy: "http://localhost:3009/**",
+  //   "/p0nxx/**": {
+  //     proxy: "https://p0nxx.vercel.app",
   //   },
   // },
 });

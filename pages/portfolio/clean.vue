@@ -1,18 +1,18 @@
 <template>
   <div id="container">
-    <div class="h-screen overflow-hidden pt-10px">
+    <div class="h-screen overflow-hidden">
       <img ref="scrollIntoView" src="/portfolio/panoramas/1.jpeg" />
       <img src="/portfolio/panoramas/2.jpeg" />
     </div>
     <div class="h-screen">
       <img src="/portfolio/panoramas/11.jpeg" />
       <div
-        class="w-screen min-w-screen h-screen text-black bg-white flex flex-col justify-between"
+        class="w-screen min-w-screen h-screen text-white bg-black flex flex-col justify-between"
       >
-        <div class="p-3 text-2rem font-bold font-helvetica">
-          <div>ZHDK</div>
-          <h1>Panorama-Studien. Toni-Areal. 2023.</h1>
-          <p class="text-1.4rem pt-1">
+        <div class="p-3 text-1.3rem font-bold font-helvetica md:pt-2.5rem">
+          <h2 class="mb-1">ZHDK</h2>
+          <h1 class="text-2rem mb-1">Panorama-Studien. Toni-Areal. 2023.</h1>
+          <p class="max-w-80%">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quidem
             cupiditate similique nulla, aspernatur modi laudantium enim ratione
             ab quibusdam esse officia a totam tempora rerum minima autem ipsum
@@ -46,7 +46,10 @@
       <div
         class="w-screen min-w-screen h-screen text-black bg-white flex flex-col justify-between"
       >
-        <div class="p-3 text-2rem font-bold font-helvetica">
+        <div
+          class="p-3 text-2rem font-bold font-helvetica md:pt-2.5rem"
+          id="tmol"
+        >
           <!-- <div class="uppercase" id="freelance">Freelance</div> -->
           <h1 class="pt-4">The Meaning Of Life. Zurich. 2020.</h1>
           <p class="text-1.4rem pt-1 xl:w-60vw">
@@ -66,10 +69,12 @@
       </div>
     </div>
   </div>
-  <div class="fixed left-0 top-0">
+  <div
+    class="fixed right-0 bottom-0 h-fit flex justify-end flex-wrap-reverse md:top-0 md:flex-wrap text-1rem"
+  >
     <button @click="scrollIntoView.scrollIntoView()">Home</button>
     <button class="bg-blue">
-      <a href="#freelance">The Meaning Of Life</a>
+      <a href="#tmol">The Meaning Of Life</a>
     </button>
     <button><a href="#freelance">Ja eh</a></button>
     <button class="bg-yellow"><a href="#freelance">Tutanota</a></button>
